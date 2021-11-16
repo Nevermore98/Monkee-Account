@@ -1,17 +1,33 @@
-// src/router/index.js
 import { createRouter, createWebHashHistory } from 'vue-router'
 import Home from '../views/Home.vue'
+import Data from '../views/Data.vue'
+import User from '../views/User.vue'
+import Login from '../views/Login.vue'
 
-// createRouter 创建路由实例
 const router = createRouter({
-  history: createWebHashHistory(), // hash 模式：createWebHashHistory，history 模式：createWebHistory
+  history: createWebHashHistory(),
   routes: [
     {
       path: '/',
+      redirect: '/home',
+    },
+    {
+      path: '/home',
       component: Home,
+    },
+    {
+      path: '/data',
+      component: Data,
+    },
+    {
+      path: '/user',
+      component: User,
+    },
+    {
+      path: '/login',
+      component: Login,
     },
   ],
 })
 
-// 抛出路由实例, 在 main.js 中引用
 export default router
