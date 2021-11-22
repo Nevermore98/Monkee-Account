@@ -23,16 +23,16 @@ export default {
   props: {
     title: {
       type: String,
-      default: '',
-    },
+      default: ''
+    }
   },
   setup() {
     const router = useRouter()
     const goBack = () => router.back()
     return {
-      goBack,
+      goBack
     }
-  },
+  }
 }
 </script>
 

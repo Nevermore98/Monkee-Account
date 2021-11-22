@@ -1,7 +1,7 @@
-<template> 明细 </template>
+<template>明细</template>
 
 <script>
-  export default {
-    name: "Home",
-  };
+export default {
+  name: 'Home'
+}
 </script>

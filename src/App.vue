@@ -10,7 +10,7 @@ import NavBar from './components/NavBar.vue'
 export default {
   name: 'App',
   components: {
-    NavBar,
+    NavBar
   },
   setup() {
     // const state = reactive({
@@ -34,8 +34,8 @@ export default {
     })
 
     return {
-      isShowNavBar,
+      isShowNavBar
     }
-  },
+  }
 }
 </script>

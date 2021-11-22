@@ -17,7 +17,7 @@ import { useRouter } from 'vue-router'
 export default {
   name: 'NavBar',
   props: {
-    msg: String,
+    msg: String
   },
   setup() {
     const router = useRouter()
@@ -29,9 +29,9 @@ export default {
 
     return {
       active,
-      link,
+      link
     }
-  },
+  }
 }
 
 // script-setup

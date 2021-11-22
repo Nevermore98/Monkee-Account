@@ -1,7 +1,7 @@
-<template> 统计 </template>
+<template>统计</template>
 
 <script>
-  export default {
-    name: "Data",
-  };
+export default {
+  name: 'Data'
+}
 </script>
