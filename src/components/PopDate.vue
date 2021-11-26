@@ -8,7 +8,7 @@
       :max-date="maxDate"
       :formatter="formatter"
       @confirm="selectDate"
-      @cancel="toggle"
+      @cancel="isShowDate = false"
     />
   </van-popup>
 </template>
@@ -23,10 +23,6 @@ export default {
     const maxDate = ref(new Date())
     const isShowDate = ref(false)
     const currentDate = ref(new Date())
-
-    const toggle = () => {
-      isShowDate.value = !isShowDate.value
-    }
 
     const selectDate = (item: Date) => {
       currentDate.value = item
@@ -48,7 +44,6 @@ export default {
       minDate, maxDate,
       isShowDate,
       currentDate,
-      toggle,
       selectDate,
       formatter,
     };

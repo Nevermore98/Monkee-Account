@@ -3,7 +3,7 @@
     <div class="pop">
       <div class="header van-hairline--bottom">
         请选择类型
-        <van-icon name="cross" class="cross" @click="toggle" />
+        <van-icon name="cross" class="cross" @click="isShowType = false" />
       </div>
       <div class="content">
         <div
@@ -54,23 +54,13 @@ export default {
       expenseTypes: [],
       incomeTypes: []
     })
-    // const showType = ref(false)
-
-    // 请求标签接口放在弹窗内，这个弹窗可能会被复用，所以请求如果放在外面，会造成代码冗余。
     onMounted(async () => {
       const { data: { list } } = await axios.get('/type/list')
       state.expenseTypes = list.filter(i => i.type === '1')
       state.incomeTypes = list.filter(i => i.type === '2')
       console.log('收支类型：', list)
-      // console.log(state.expenseTypes)
-      // console.log(state.incomeTypes)
     })
 
-    // 控制弹窗的展示和隐藏
-    const toggle = () => {
-      state.isShowType = !state.isShowType
-    }
-    // 选择标签方法
     const selectType = (item: BillType) => {
       state.active = item.id
       state.isShowType = false
@@ -79,9 +69,7 @@ export default {
 
     return {
       ...toRefs(state),
-      toggle,
       selectType,
-      // showType,
     }
   }
 }

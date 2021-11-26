@@ -22,7 +22,9 @@
       @click="goToDetail(item)"
       :title="item.type_name"
       :value="`${item.pay_type == 1 ? '-' : '+'}${item.amount}`"
-      :label="`${dayjs(Number(item.date)).format('HH:mm')}${item.remark ? (' | ' + item.remark) : ''}`"
+      :label="`${dayjs(Number(item.date)).format('HH:mm')}${
+        item.remark ? ' | ' + item.remark : ''
+      }`"
     />
   </van-cell-group>
 </template>
@@ -49,7 +51,7 @@ export default {
       星期四,
       星期五,
       星期六,
-      星期日,
+      星期日
     }
 
     const dayBillList = props.dayBillList
@@ -58,19 +60,24 @@ export default {
     const createAtDate = dayjs(dayBillList.date).format('M月D日')
 
     const totalExpense = computed(() => {
-      return props.dayBillList.bills.reduce((cur: number, dayBillItem: DayBillItem) => {
-        if (dayBillItem.pay_type === 1) cur += Number(dayBillItem?.amount);
-        return cur;
-      }, 0);
-    });
+      return props.dayBillList.bills.reduce(
+        (cur: number, dayBillItem: DayBillItem) => {
+          if (dayBillItem.pay_type === 1) cur += Number(dayBillItem?.amount)
+          return cur
+        },
+        0
+      )
+    })
     const totalIncome = computed(() => {
-      console.log(props.dayBillList.bills);
-      return props.dayBillList.bills.reduce((cur: number, dayBillItem: DayBillItem) => {
-        if (dayBillItem.pay_type === 2) cur += Number(dayBillItem?.amount);
-        return cur;
-      }, 0);
-    });
-
+      console.log('🚀 ~ totalIncome ~ 单日账单', props.dayBillList.bills)
+      return props.dayBillList.bills.reduce(
+        (cur: number, dayBillItem: DayBillItem) => {
+          if (dayBillItem.pay_type === 2) cur += Number(dayBillItem?.amount)
+          return cur
+        },
+        0
+      )
+    })
 
     const goToDetail = (item) => {
       console.log(item.id)
@@ -83,17 +90,19 @@ export default {
     }
 
     return {
-      createAtDate, createAtDay,
-      totalExpense, totalIncome,
+      createAtDate,
+      createAtDay,
+      totalExpense,
+      totalIncome,
       goToDetail,
-      dayjs,
+      dayjs
     }
   }
 }
 </script>
 
-<style lang='less' scoped>
-@import url("../config/custom.less");
+<style lang="less" scoped>
+@import url('../config/custom.less');
 .item-wrap {
   border-radius: 10px;
   overflow: hidden;
@@ -126,8 +135,8 @@ export default {
   }
 }
 </style>
-<style lang='less'>
-@import url("../config/custom.less");
+<style lang="less">
+@import url('../config/custom.less');
 .expense {
   .van-cell__value {
     color: @color-text-base!important;

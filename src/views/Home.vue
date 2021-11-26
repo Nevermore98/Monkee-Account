@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <div class="header">
-      <div class="type-wrap" @click="toggle">
+      <div class="type-wrap" @click="popTypeRef.isShowType = true">
         <span class="all-type">{{ selectedType.name || '全部类型' }}</span>
         <svg class="icon">
           <use xlink:href="#icon-type" />
@@ -9,7 +9,7 @@
       </div>
 
       <div class="data-wrap">
-        <span class="time" @click="monthToggle">
+        <span class="time" @click="popDateRef.isShowDate = true">
           {{ currentDate }}
           <svg class="icon icon-sort-down">
             <use xlink:href="#icon-sort-down" />
@@ -37,12 +37,13 @@
       </van-pull-refresh>
     </div>
 
-    <!-- <van-popup v-model:show="showType" position="bottom" round :style="{ height: '70%' }">
-      <PopType />
-    </van-popup>-->
+    <div class="add-icon" @click="popAddRef.isShowAdd = true">
+      <van-icon name="records" />
+    </div>
 
     <PopType ref="popTypeRef" @select-type="handleSelectType" />
-    <PopDate ref="popMonthRef" @select-date="handleSelectDate" />
+    <PopDate ref="popDateRef" @select-date="handleSelectDate" />
+    <PopAdd ref="popAddRef" />
   </div>
 </template>
 
@@ -54,18 +55,20 @@ import axios from '../utils/axios'
 import BillItem from '../components/BillItem.vue'
 import type { BillList, BillType } from '../api/bill'
 import dayjs from 'dayjs'
-
+import PopAdd from '../components/PopAdd.vue'
 
 export default {
   components: {
     PopType,
     PopDate,
     BillItem,
+    PopAdd
   },
   setup() {
     const popTypeRef = ref(null)
-    const popMonthRef = ref(null)
-    const showType = ref(false) // 选择账单类型弹窗
+    const popDateRef = ref(null)
+    const popAddRef = ref(null)
+
     let billList = ref<BillList>([])
 
     const state = reactive({
@@ -81,12 +84,12 @@ export default {
     })
     const selectedType = reactive<BillType>({
       id: 0,
-      name: "全部类型",
+      name: '全部类型'
     })
 
-    const toggle = () => {
-      popTypeRef.value.toggle()
-    }
+    // const typeToggle = () => {
+    //   popTypeRef.value.toggle()
+    // }
 
     const handleSelectType = (item: BillType) => {
       Object.assign(selectedType, item)
@@ -96,22 +99,23 @@ export default {
       onRefresh()
     }
 
-    const monthToggle = () => {
-      popMonthRef.value.toggle()
-    }
+    // const dateToggle = () => {
+    //   popDateRef.value.toggle()
+    // }
 
-    const handleSelectDate = (item) => {
+    const handleSelectDate = (item: string) => {
       state.currentDate = item
       onRefresh()
     }
+
+    const addToggle = () => { }
 
     const getBillList = async () => {
       const { data } = await axios.get(
         `/bill/list?date=${state.currentDate}&type_id=${selectedType.id || 'all'
         }&page=${state.page}&page_size=5`
       )
-      console.log('筛选后的账单列表：', data.list)
-
+      console.log('🚀 ~ getBillList ~ 筛选后的账单列表', data.list)
       if (state.refreshing) {
         billList.value = []
         state.refreshing = false
@@ -149,16 +153,12 @@ export default {
       ...toRefs(state),
       billList,
       selectedType,
-      popTypeRef,
-      popMonthRef,
-      toggle,
+      popTypeRef, popDateRef, popAddRef,
+      addToggle,
       handleSelectType,
-      monthToggle,
       handleSelectDate,
       onRefresh,
-
-      showType,
-      onLoad,
+      onLoad
     }
   }
 }
@@ -229,6 +229,22 @@ export default {
     background-color: #f5f5f5;
     padding: 10px;
     // padding-bottom: 50px;
+  }
+  .add-icon {
+    position: fixed;
+    bottom: 100px;
+    right: 30px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid #e9e9e9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    background-color: #fff;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
+    color: @primary;
   }
 }
 </style>
