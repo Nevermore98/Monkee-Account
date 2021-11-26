@@ -129,10 +129,10 @@
   resolved "https://registry.npmmirror.com/@vant/use/download/@vant/use-1.3.4.tgz#f99482d63682973a2775aa5c1a9cf906862a4f71"
   integrity sha512-XvZkPCjcmEBhD+T3vB68thOG6P9jazld6aBTMenhbAQd4FT/x9AiKIWPJx4MvhYoSIWt7fju6K01XTJldWs1hw==
 
-"@vitejs/plugin-vue@^1.9.3":
-  version "1.9.4"
-  resolved "https://registry.npmmirror.com/@vitejs/plugin-vue/download/@vitejs/plugin-vue-1.9.4.tgz#4f48485432cbb986a9fb9d254dc33ce30ddccbfa"
-  integrity sha1-T0hIVDLLuYap+50lTcM84w3cy/o=
+"@vitejs/plugin-vue@^1.10.0":
+  version "1.10.0"
+  resolved "https://registry.npmmirror.com/@vitejs/plugin-vue/download/@vitejs/plugin-vue-1.10.0.tgz?cache=0&sync_timestamp=1637579950965&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2F%40vitejs%2Fplugin-vue%2Fdownload%2F%40vitejs%2Fplugin-vue-1.10.0.tgz#d015c12d905bb7f76274c2bb272c3662151bf3c0"
+  integrity sha512-XkSN7lduhQ3z/WMXv2spqt9TCS0znCjnvIGmbud2bxViWWWR4JWXE+x/cQZ/klR0Ug4Ts9eubL7LXAysON5Uvg==
 
 "@vue/compiler-core@3.2.22":
   version "3.2.22"
@@ -152,7 +152,7 @@
     "@vue/compiler-core" "3.2.22"
     "@vue/shared" "3.2.22"
 
-"@vue/compiler-sfc@3.2.22":
+"@vue/compiler-sfc@3.2.22", "@vue/compiler-sfc@^3.2.22":
   version "3.2.22"
   resolved "https://registry.npmmirror.com/@vue/compiler-sfc/download/@vue/compiler-sfc-3.2.22.tgz?cache=0&sync_timestamp=1636947951950&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2F%40vue%2Fcompiler-sfc%2Fdownload%2F%40vue%2Fcompiler-sfc-3.2.22.tgz#ffd0e5e35479b6ade18d12fefec369cbaf2f7718"
   integrity sha512-tWRQ5ge1tsTDhUwHgueicKJ8rYm6WUVAPTaIpFW3GSwZKcOEJ2rXdfkHFShNVGupeRALz2ET2H84OL0GeRxY0A==
@@ -456,6 +456,11 @@ cz-conventional-changelog@^3.3.0:
     word-wrap "^1.0.3"
   optionalDependencies:
     "@commitlint/load" ">6.1.1"
+
+dayjs@^1.10.7:
+  version "1.10.7"
+  resolved "https://registry.nlark.com/dayjs/download/dayjs-1.10.7.tgz?cache=0&sync_timestamp=1631266519235&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fdayjs%2Fdownload%2Fdayjs-1.10.7.tgz#2cf5f91add28116748440866a0a1d26f3a6ce468"
+  integrity sha1-LPX5Gt0oEWdIRAhmoKHSbzps5Gg=
 
 debug@^3.2.6:
   version "3.2.7"

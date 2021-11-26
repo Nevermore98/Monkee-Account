@@ -9,7 +9,7 @@
     left-arrow
   >
     <template #right>
-      <svg class="more">
+      <svg class="icon-more">
         <use xlink:href="#icon-more"></use>
       </svg>
     </template>
@@ -46,7 +46,7 @@ export default {
   top: 0;
   left: 0;
   width: 100%;
-  .more {
+  .icon-more {
     width: 22px;
     height: 22px;
   }

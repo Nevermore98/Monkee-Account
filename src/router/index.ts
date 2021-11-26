@@ -1,8 +1,4 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import Home from '../views/Home.vue'
-import Data from '../views/Data.vue'
-import User from '../views/User.vue'
-import Login from '../views/Login.vue'
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -13,19 +9,19 @@ const router = createRouter({
     },
     {
       path: '/home',
-      component: Home
+      component: () => import(/* webpackChunkName: "home-chunk" */'../views/Home.vue'),
     },
     {
       path: '/data',
-      component: Data
+      component: () => import(/* webpackChunkName: "data-chunk" */'../views/Data.vue'),
     },
     {
       path: '/user',
-      component: User
+      component: () => import(/* webpackChunkName: "user-chunk" */'../views/User.vue'),
     },
     {
       path: '/login',
-      component: Login
+      component: () => import(/* webpackChunkName: "login-chunk" */'../views/Login.vue'),
     }
   ]
 })
