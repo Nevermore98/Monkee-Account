@@ -25,10 +25,15 @@
       :label="`${dayjs(Number(item.date)).format('HH:mm')}${
         item.remark ? ' | ' + item.remark : ''
       }`"
-      ><template #type-icon>
-        <svg class="icon">
-          <use v-bind:xlink:href="getHref(item)" />
-        </svg>
+      ><template #icon>
+        <div
+          class="icon-wrap"
+          :class="{ expense: item.pay_type === 1, income: item.pay_type === 2 }"
+        >
+          <svg class="icon">
+            <use v-bind:xlink:href="getHref(item)" />
+          </svg>
+        </div>
       </template>
     </van-cell>
   </van-cell-group>
@@ -37,8 +42,10 @@
 <script lang="ts">
 import { computed, PropType } from 'vue'
 import { useRouter } from 'vue-router'
-import type { DayBillItem, DayBillList } from '@/api/bill'
+import type { DayBillItem, DayBillItems, DayBillList } from '@/api/bill'
 import dayjs from 'dayjs'
+import { typeMap } from '@/utils/index'
+import { BillType } from '@/api/bill'
 
 export default {
   name: 'CardItem',
@@ -83,13 +90,17 @@ export default {
       )
     })
 
-    const goToDetail = (item) => {
+    const goToDetail = (item: DayBillItem) => {
       router.push({
         path: '/detail',
         query: {
           id: item.id
         }
       })
+    }
+    const getHref = (item: DayBillItem) => {
+      let iconName = typeMap[item.type_id].icon
+      return `#icon-${iconName}`
     }
 
     return {
@@ -98,7 +109,8 @@ export default {
       totalExpense,
       totalIncome,
       goToDetail,
-      dayjs
+      dayjs,
+      getHref
     }
   }
 }
@@ -132,6 +144,34 @@ export default {
           padding: 3px;
           border-radius: 2px;
         }
+      }
+    }
+  }
+  .bill-item {
+    .icon-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #f5f5f5;
+      border-radius: 50%;
+      height: 36px;
+      width: 36px;
+      margin-right: 10px;
+      .icon {
+        font-size: 22px;
+      }
+    }
+    .expense {
+      background-color: @primary;
+      color: @color-text-caption;
+      .icon {
+        color: #fff;
+      }
+    }
+    .income {
+      background-color: @text-warning;
+      .icon {
+        color: #fff;
       }
     }
   }

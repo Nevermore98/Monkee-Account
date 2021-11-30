@@ -7,7 +7,7 @@ export interface BillType {
 
 /** 单日账单单条记录 */
 export interface DayBillItem {
-  id?: number
+  id?: number // 单条记录的 id
   pay_type?: 1 | 2
   amount?: string
   date?: string // 时间戳
