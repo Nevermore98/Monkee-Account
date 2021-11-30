@@ -10,7 +10,7 @@
   </van-tabbar>
 </template>
 
-<script>
+<script lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -46,3 +46,9 @@ export default {
 //   router.push({ path })
 // }
 </script>
+<style lang="less">
+  @import url('@/config/custom.less');
+  .van-tabbar-item--active {
+    color: @primary!important;
+  }
+</style>

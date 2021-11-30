@@ -3,10 +3,10 @@
   <NavBar v-if="isShowNavBar" />
 </template>
 
-<script>
+<script lang="ts">
 import { useRouter } from 'vue-router'
 import { reactive, ref } from 'vue'
-import NavBar from './components/NavBar.vue'
+import NavBar from '@/components/NavBar.vue'
 export default {
   name: 'App',
   components: {

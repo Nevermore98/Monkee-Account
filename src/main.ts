@@ -1,8 +1,8 @@
 import { createApp } from 'vue'
-import App from './App.vue'
+import App from '@/App.vue'
 import dayjs from 'dayjs'
 import 'lib-flexible/flexible'
-import router from './router'
+import router from '@/router'
 import {
   Button,
   Tabbar,
@@ -17,10 +17,13 @@ import {
   Popup,
   DatetimePicker,
   PullRefresh,
-  List
+  List,
+  Calendar,
+  ConfigProvider,
+  NumberKeyboard,
 } from 'vant'
 import 'vant/lib/index.css' // 全局引入样式
-import './index.less'
+import '@/index.less'
 
 const app = createApp(App)
 
@@ -39,12 +42,8 @@ app.use(Popup)
 app.use(DatetimePicker)
 app.use(PullRefresh)
 app.use(List)
-
-// 全局过滤器
-app.config.globalProperties.$filters = {
-  transTime(date) {
-    return dayjs(Number(date)).format("HH:mm");
-  },
-};
+app.use(Calendar)
+app.use(ConfigProvider)
+app.use(NumberKeyboard)
 
 app.mount('#app')

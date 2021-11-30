@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { Toast } from 'vant'
-import router from '../router'
+import router from '@/router'
 
 axios.defaults.baseURL = process.env.NODE_ENV === 'development' ? '/api' : '//47.99.134.126:7008/api'
 axios.defaults.withCredentials = true

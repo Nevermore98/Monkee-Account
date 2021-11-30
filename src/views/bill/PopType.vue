@@ -40,9 +40,9 @@
 
 <script lang="ts">
 import { onMounted, reactive, toRefs, PropType, computed } from 'vue'
-import axios from '../utils/axios'
+import axios from '@/utils/axios'
 
-import type { BillType } from '../api/bill'
+import type { BillType } from '@/api/bill'
 type BillList = BillType[]
 
 export default {
@@ -58,7 +58,6 @@ export default {
       const { data: { list } } = await axios.get('/type/list')
       state.expenseTypes = list.filter(i => i.type === '1')
       state.incomeTypes = list.filter(i => i.type === '2')
-      console.log('收支类型：', list)
     })
 
     const selectType = (item: BillType) => {
@@ -76,7 +75,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-@import url("../config/custom.less");
+@import url("@/config/custom.less");
 .pop {
   position: relative;
   background-color: #f5f5f5;

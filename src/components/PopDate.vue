@@ -28,7 +28,6 @@ export default {
       currentDate.value = item
       isShowDate.value = false
       ctx.emit("select-date", dayjs(item).format("YYYY-MM"));
-      console.log('选择日期：', dayjs(item).format("YYYY-MM"))
     };
 
     const formatter = (type: string, val: string) => {

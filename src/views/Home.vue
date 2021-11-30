@@ -10,7 +10,7 @@
 
       <div class="data-wrap">
         <span class="time" @click="popDateRef.isShowDate = true">
-          {{ currentDate }}
+          <span>{{ currentDate }}</span>
           <svg class="icon icon-sort-down">
             <use xlink:href="#icon-sort-down" />
           </svg>
@@ -43,19 +43,19 @@
 
     <PopType ref="popTypeRef" @select-type="handleSelectType" />
     <PopDate ref="popDateRef" @select-date="handleSelectDate" />
-    <PopAdd ref="popAddRef" />
+    <PopAdd ref="popAddRef" @refresh="onRefresh" />
   </div>
 </template>
 
 <script lang="ts">
 import { reactive, ref, toRefs, onMounted } from 'vue'
-import PopType from '../components/PopType.vue'
-import PopDate from '../components/PopDate.vue'
-import axios from '../utils/axios'
-import BillItem from '../components/BillItem.vue'
-import type { BillList, BillType } from '../api/bill'
+import PopType from '@/views/bill/PopType.vue'
+import PopDate from '@/components/PopDate.vue'
+import axios from '@/utils/axios'
+import BillItem from '@/views/bill/BillItem.vue'
+import type { BillList, BillType } from '@/api/bill'
 import dayjs from 'dayjs'
-import PopAdd from '../components/PopAdd.vue'
+import PopAdd from '@/views/bill/PopAdd.vue'
 
 export default {
   components: {
@@ -108,14 +108,14 @@ export default {
       onRefresh()
     }
 
-    const addToggle = () => { }
+    const addToggle = () => {}
 
     const getBillList = async () => {
       const { data } = await axios.get(
-        `/bill/list?date=${state.currentDate}&type_id=${selectedType.id || 'all'
+        `/bill/list?date=${state.currentDate}&type_id=${
+          selectedType.id || 'all'
         }&page=${state.page}&page_size=5`
       )
-      console.log('🚀 ~ getBillList ~ 筛选后的账单列表', data.list)
       if (state.refreshing) {
         billList.value = []
         state.refreshing = false
@@ -153,7 +153,9 @@ export default {
       ...toRefs(state),
       billList,
       selectedType,
-      popTypeRef, popDateRef, popAddRef,
+      popTypeRef,
+      popDateRef,
+      popAddRef,
       addToggle,
       handleSelectType,
       handleSelectDate,
@@ -165,7 +167,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-@import url("../config/custom.less");
+@import url('@/config/custom.less');
 .home {
   height: 100%;
   display: flex;
@@ -186,7 +188,7 @@ export default {
     padding-left: 20px;
     z-index: 100;
     .type-wrap {
-      background-color: lighten(@primary, 10%);
+      background-color: lighten(@primary, 4%);
       display: inline-block;
       padding: 6px;
       border-radius: 4px;
@@ -196,7 +198,7 @@ export default {
         margin-right: 22px;
       }
       .all-type::after {
-        content: "";
+        content: '';
         position: absolute;
         top: 12px;
         bottom: 11px;
@@ -210,11 +212,11 @@ export default {
       margin-top: 10px;
       font-size: 13px;
       .time {
+        display: flex;
         margin-right: 12px;
         line-height: 18px;
         .icon-sort-down {
-          // 目前只能想到这种笨方法，实现 svg 近似垂直居中
-          margin-bottom: 2px;
+          margin-left: 2px;
         }
       }
       .expense {
@@ -223,7 +225,7 @@ export default {
     }
   }
   .content-wrap {
-    height: calc(~"(100% - 50px)");
+    height: calc(~'(100% - 50px)');
     overflow: hidden;
     overflow-y: scroll;
     background-color: #f5f5f5;

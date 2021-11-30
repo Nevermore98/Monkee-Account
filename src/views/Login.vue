@@ -1,7 +1,7 @@
 <template>
   <Header :title="type === 'login' ? '登录' : '注册'" />
   <div class="auth">
-    <img class="logo" src="../assets/monkey.png" alt="" />
+    <img class="logo" src="@/assets/monkey.png" alt="" />
 
     <!-- 登录 -->
     <van-form class="form-wrap" @submit="onSubmit" v-if="type === 'login'">
@@ -89,11 +89,11 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { reactive, toRefs, ref } from 'vue'
-import Header from '../components/Header.vue'
-import VueImgVerify from '../components/VueImgVerify.vue'
-import axios from '../utils/axios'
+import Header from '@/components/Header.vue'
+import VueImgVerify from '@/components/VueImgVerify.vue'
+import axios from '@/utils/axios'
 import { Toast } from 'vant'
 export default {
   name: 'Login',
@@ -160,7 +160,7 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-@import url('../config/custom.less');
+@import url('@/config/custom.less');
 .auth {
   height: calc(~'(100% - 46px)');
   padding: 30px 20px 0 20px;

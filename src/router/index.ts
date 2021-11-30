@@ -9,19 +9,19 @@ const router = createRouter({
     },
     {
       path: '/home',
-      component: () => import(/* webpackChunkName: "home-chunk" */'../views/Home.vue'),
+      component: () => import(/* webpackChunkName: "home-chunk" */'@/views/Home.vue'),
     },
     {
       path: '/data',
-      component: () => import(/* webpackChunkName: "data-chunk" */'../views/Data.vue'),
+      component: () => import(/* webpackChunkName: "data-chunk" */'@/views/Data.vue'),
     },
     {
       path: '/user',
-      component: () => import(/* webpackChunkName: "user-chunk" */'../views/User.vue'),
+      component: () => import(/* webpackChunkName: "user-chunk" */'@/views/User.vue'),
     },
     {
       path: '/login',
-      component: () => import(/* webpackChunkName: "login-chunk" */'../views/Login.vue'),
+      component: () => import(/* webpackChunkName: "login-chunk" */'@/views/Login.vue'),
     }
   ]
 })

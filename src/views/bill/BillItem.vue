@@ -25,14 +25,19 @@
       :label="`${dayjs(Number(item.date)).format('HH:mm')}${
         item.remark ? ' | ' + item.remark : ''
       }`"
-    />
+      ><template #type-icon>
+        <svg class="icon">
+          <use v-bind:xlink:href="getHref(item)" />
+        </svg>
+      </template>
+    </van-cell>
   </van-cell-group>
 </template>
 
 <script lang="ts">
 import { computed, PropType } from 'vue'
 import { useRouter } from 'vue-router'
-import type { DayBillItem, DayBillList } from '../api/bill'
+import type { DayBillItem, DayBillList } from '@/api/bill'
 import dayjs from 'dayjs'
 
 export default {
@@ -69,7 +74,6 @@ export default {
       )
     })
     const totalIncome = computed(() => {
-      console.log('🚀 ~ totalIncome ~ 单日账单', props.dayBillList.bills)
       return props.dayBillList.bills.reduce(
         (cur: number, dayBillItem: DayBillItem) => {
           if (dayBillItem.pay_type === 2) cur += Number(dayBillItem?.amount)
@@ -80,7 +84,6 @@ export default {
     })
 
     const goToDetail = (item) => {
-      console.log(item.id)
       router.push({
         path: '/detail',
         query: {
@@ -102,7 +105,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-@import url('../config/custom.less');
+@import url('@/config/custom.less');
 .item-wrap {
   border-radius: 10px;
   overflow: hidden;
@@ -112,7 +115,7 @@ export default {
     height: 60px;
     display: flex;
     background-color: #f9f9f9;
-    font-size: 14px;
+    font-size: 12px;
     align-items: center;
     justify-content: space-between;
     padding: 0 10px;
@@ -121,13 +124,12 @@ export default {
     }
     .today-total {
       span {
-        margin-left: 20px;
+        margin-left: 10px;
         b {
           color: @color-text-caption;
           font-weight: normal;
           background-color: #f5f5f5;
           padding: 3px;
-          margin-right: 2px;
           border-radius: 2px;
         }
       }
@@ -136,7 +138,7 @@ export default {
 }
 </style>
 <style lang="less">
-@import url('../config/custom.less');
+@import url('@/config/custom.less');
 .expense {
   .van-cell__value {
     color: @color-text-base!important;
