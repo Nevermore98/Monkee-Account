@@ -21,6 +21,7 @@ import {
   Calendar,
   ConfigProvider,
   NumberKeyboard,
+  Empty
 } from 'vant'
 import 'vant/lib/index.css' // 全局引入样式
 import '@/index.less'
@@ -45,5 +46,6 @@ app.use(List)
 app.use(Calendar)
 app.use(ConfigProvider)
 app.use(NumberKeyboard)
+app.use(Empty)
 
 app.mount('#app')

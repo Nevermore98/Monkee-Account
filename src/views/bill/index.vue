@@ -51,11 +51,12 @@
 import { reactive, ref, toRefs, onMounted } from 'vue'
 import PopType from '@/views/bill/PopType.vue'
 import PopDate from '@/components/PopDate.vue'
+import PopAdd from '@/views/bill/PopAdd.vue'
+
 import axios from '@/utils/axios'
 import BillItem from '@/views/bill/BillItem.vue'
 import type { BillList, BillType } from '@/api/bill'
 import dayjs from 'dayjs'
-import PopAdd from '@/views/bill/PopAdd.vue'
 
 export default {
   components: {

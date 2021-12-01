@@ -40,7 +40,7 @@
 </template>
 
 <script lang="ts">
-import { computed, PropType } from 'vue'
+import { computed, PropType, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import type { DayBillItem, DayBillItems, DayBillList } from '@/api/bill'
 import dayjs from 'dayjs'

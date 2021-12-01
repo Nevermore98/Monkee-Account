@@ -3,7 +3,7 @@
     v-model:show="isShowAdd"
     position="bottom"
     round
-    @closed="clearPopAdd"
+    @close="clearPopAddInHome"
   >
     <div class="add-wrap">
       <!-- 添加账单头部 -->
@@ -96,7 +96,14 @@
       </div>
       <!-- 备注输入框 -->
       <div class="remark">
-        <van-field v-model="remark" label="备注" placeholder="添加记账备注" />
+        <van-field
+          v-model="remark"
+          label="备注"
+          placeholder="添加记账备注"
+          maxlength="15"
+          clearable
+          show-word-limit
+        />
       </div>
 
       <!-- 数字键盘 -->
@@ -116,28 +123,46 @@
 </template>
 
 <script lang="ts">
-import { onMounted, ref, computed, watch } from 'vue'
+import { onMounted, ref, computed, watch, PropType } from 'vue'
 import dayjs from 'dayjs'
 import { Icon, Toast } from 'vant'
 import axios from 'axios'
 import { typeMap } from '@/utils/index'
-import { BillType } from '@/api/bill'
+import { BillType, BillTypeList, DayBillItem } from '@/api/bill'
 // import useCalculator from '@/hooks/useCalculator'
 
 export default {
   emits: ['refresh'],
+  props: {
+    initData: Object as PropType<DayBillItem>
+  },
   setup(props, ctx) {
-    // const id = props.detail && props.detail.id // 外部传进来的账单详情 id
+    const id = props.initData && props.initData.id // 外部传进来的账单详情 id
     const isShowAdd = ref(false)
     const isShowAddDate = ref(false)
     const payType = ref('expense')
     const selectedDate = ref(new Date())
     const billAmount = ref('')
-    const selectedType = ref<BillType>()
-    const expenseList = ref([])
-    const incomeList = ref([])
+    const selectedType = ref<BillType>({})
+    const expenseList = ref<BillTypeList>([])
+    const incomeList = ref<BillTypeList>([])
     const remark = ref('')
     const numberPadButtonColor = ref('#39be77')
+
+    watch(
+      () => props.initData,
+      () => {
+        if (id) {
+          billAmount.value = props.initData.amount || ''
+          selectedType.value.id = props.initData.type_id || 0
+          selectedType.value.name = props.initData.type_name || ''
+          selectedDate.value = dayjs(Number(props.initData.date)).$d
+          remark.value = props.initData.remark || ''
+          payType.value = props.initData.pay_type === 1 ? 'expense' : 'income'
+        }
+      },
+      { deep: true, immediate: true }
+    )
 
     onMounted(async () => {
       // 拿到请求到的对象里的 data 属性里的 list 属性
@@ -260,21 +285,29 @@ export default {
         return
       }
 
-      const params = {
+      const params: DayBillItem = {
         amount: Number(billAmount.value).toFixed(2), // 金额
         type_id: selectedType.value.id, // 当前消费类型 id
         type_name: selectedType.value.name, // 当前消费类型 name
-        date: dayjs(selectedDate.value).unix() * 1000, // 日期
+        date: (dayjs(selectedDate.value).unix() * 1000).toString(), // 日期
         pay_type: payType.value == 'expense' ? 1 : 2, // 支出或收入
         remark: remark.value || ''
       }
-      const result = await axios.post('/bill/add', params)
-      // console.log('🚀 ~ addBill ~ result', result)
-      // 调完接口之后清空数据
-      clearPopAdd()
-      Toast.success('添加成功')
-      // 向首页发送事件，刷新账单页
-      ctx.emit('refresh')
+      if (id) {
+        params.id = id
+        // 如果有 id 即是在编辑账单详情，需要调用详情更新接口
+        const result = await axios.post('/bill/update', params)
+        isShowAdd.value = false
+        Toast.success('修改成功')
+        ctx.emit('refresh')
+      } else {
+        const result = await axios.post('/bill/add', params)
+        // 调完接口之后清空数据
+        clearPopAdd()
+        Toast.success('添加成功')
+        // 向首页发送事件，刷新账单页
+        ctx.emit('refresh')
+      }
     }
 
     const handleDelete = () => {
@@ -289,6 +322,12 @@ export default {
       isShowAdd.value = false
       selectedDate.value = new Date()
       remark.value = ''
+    }
+    // 弹出添加账单而不确定，直接关闭则清空数据，在账单详情里则不清空
+    const clearPopAddInHome = () => {
+      if (!id) {
+        clearPopAdd()
+      }
     }
 
     return {
@@ -316,7 +355,8 @@ export default {
       getHref,
       addBill,
       remark,
-      clearPopAdd
+      clearPopAdd,
+      clearPopAddInHome
     }
   }
 }
@@ -388,9 +428,6 @@ export default {
     }
   }
   .numberPad {
-    // * {
-    //   outline: red 1px solid;
-    // }
     padding-bottom: 12px;
     border-bottom: 1px solid #e9e9e9;
     padding: 10px 20px;
@@ -434,7 +471,6 @@ export default {
         align-items: center;
         width: calc(100% / 6);
         padding: 16px 10px 0 10px;
-        // margin: 2px;
         .icon-wrap {
           display: flex;
           justify-content: center;
@@ -483,5 +519,17 @@ export default {
 @import url('@/config/custom.less');
 .van-field__label {
   width: 32px;
+}
+.van-field__body {
+  position: relative;
+}
+.van-field__clear {
+  position: absolute;
+  right: 16%;
+}
+.van-field__word-limit {
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 </style>

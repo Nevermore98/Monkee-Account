@@ -39,3 +39,40 @@ export default {
   }
 }
 </script>
+<!-- 搞不定组件动画 -->
+<!-- <style>
+.aside-right-enter-active,
+.aside-right-leave-active {
+  transition: all 0.5s ease;
+}
+
+.aside-right-enter-from,
+.aside-right-leave-to {
+  transform: translate(-100%, 0);
+}
+
+.slide-enter-active,
+.slide-leave-active {
+  transition: all 0.75s ease-out;
+}
+
+.slide-enter-to {
+  position: absolute;
+  right: 0;
+}
+
+.slide-enter-from {
+  position: absolute;
+  right: -100%;
+}
+
+.slide-leave-to {
+  position: absolute;
+  left: -100%;
+}
+
+.slide-leave-from {
+  position: absolute;
+  left: 0;
+}
+</style> -->
