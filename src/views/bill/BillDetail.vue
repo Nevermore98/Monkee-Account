@@ -57,8 +57,8 @@ import { onMounted, reactive, ref, toRefs } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Header from '@/components/Header.vue'
 import dayjs from 'dayjs'
-import { typeMap } from '../utils'
-import axios from '../utils/axios'
+import { typeMap } from '@/utils'
+import axios from '@/utils/axios'
 import { Toast, Dialog } from 'vant'
 import { ReqDetail } from '@/api/bill'
 import PopAdd from '@/views/bill/PopAdd.vue'
@@ -119,7 +119,7 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-@import url('../config/custom.less');
+@import url('@/config/custom.less');
 .detail {
   height: calc(~'(100% - 46px)');
   display: flex;

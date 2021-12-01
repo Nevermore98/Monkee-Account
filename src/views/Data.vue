@@ -1,6 +1,6 @@
 <template>统计</template>
 
-<script>
+<script lang="ts">
 export default {
   name: 'Data'
 }

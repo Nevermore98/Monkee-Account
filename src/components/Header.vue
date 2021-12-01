@@ -16,7 +16,7 @@
   </van-nav-bar>
 </template>
 
-<script>
+<script lang="ts">
 import { useRouter } from 'vue-router'
 export default {
   name: 'Header',

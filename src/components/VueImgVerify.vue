@@ -8,7 +8,7 @@
     ></canvas>
   </div>
 </template>
-<script>
+<script lang="ts">
 import { reactive, onMounted, ref, toRefs } from 'vue'
 export default {
   setup() {

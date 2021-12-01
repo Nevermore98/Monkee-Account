@@ -30,7 +30,9 @@ const router = createRouter({
     {
       path: '/detail',
       component: () =>
-        import(/* webpackChunkName: "login-chunk" */ '@/views/Detail.vue')
+        import(
+          /* webpackChunkName: "login-chunk" */ '@/views/bill/BillDetail.vue'
+        )
     }
   ]
 })
