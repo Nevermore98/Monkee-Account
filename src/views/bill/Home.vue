@@ -1,5 +1,7 @@
 <template>
   <div class="home">
+    <!-- 账单顶部筛选总览区域 -->
+    <!-- TODO 使用 keep alive 缓存组件，使得 selectedDate 缓存-->
     <div class="header">
       <div class="type-wrap" @click="popTypeRef.isShowType = true">
         <span class="all-type">{{ selectedType.name || '全部类型' }}</span>
@@ -7,10 +9,9 @@
           <use xlink:href="#icon-type" />
         </svg>
       </div>
-
       <div class="data-wrap">
         <span class="time" @click="popDateRef.isShowDate = true">
-          <span>{{ currentDate }}</span>
+          <span>{{ selectedDate }}</span>
           <svg class="icon icon-sort-down">
             <use xlink:href="#icon-sort-down" />
           </svg>
@@ -19,7 +20,7 @@
         <span class="income">总收入 ￥{{ totalIncome }}</span>
       </div>
     </div>
-
+    <!-- 账单列表 -->
     <div class="content-wrap">
       <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
         <van-list
@@ -36,7 +37,7 @@
         </van-list>
       </van-pull-refresh>
     </div>
-
+    <!-- 添加账单按钮 -->
     <div class="add-icon" @click="popAddRef.isShowAdd = true">
       <van-icon name="records" />
     </div>
@@ -48,7 +49,7 @@
 </template>
 
 <script lang="ts">
-import { reactive, ref, toRefs, onMounted } from 'vue'
+import { reactive, ref } from 'vue'
 import PopType from '@/views/bill/PopType.vue'
 import PopDate from '@/components/PopDate.vue'
 import PopAdd from '@/views/bill/PopAdd.vue'
@@ -70,27 +71,21 @@ export default {
     const popDateRef = ref(null)
     const popAddRef = ref(null)
 
-    let billList = ref<BillList>([])
+    const billList = ref<BillList>([])
+    const totalExpense = ref(0)
+    const totalIncome = ref(0)
+    const page = ref(1)
+    const totalPage = ref(0)
+    const list = ref([])
+    const loading = ref(false)
+    const finished = ref(false)
+    const refreshing = ref(false)
+    const selectedDate = ref(dayjs().format('YYYY-MM'))
 
-    const state = reactive({
-      totalExpense: 0,
-      totalIncome: 0,
-      page: 1,
-      totalPage: 0,
-      list: [],
-      loading: false,
-      finished: false,
-      refreshing: false,
-      currentDate: dayjs().format('YYYY-MM')
-    })
     const selectedType = reactive<BillType>({
       id: 0,
       name: '全部类型'
     })
-
-    // const typeToggle = () => {
-    //   popTypeRef.value.toggle()
-    // }
 
     const handleSelectType = (item: BillType) => {
       Object.assign(selectedType, item)
@@ -100,12 +95,8 @@ export default {
       onRefresh()
     }
 
-    // const dateToggle = () => {
-    //   popDateRef.value.toggle()
-    // }
-
     const handleSelectDate = (item: string) => {
-      state.currentDate = item
+      selectedDate.value = item
       onRefresh()
     }
 
@@ -113,45 +104,53 @@ export default {
 
     const getBillList = async () => {
       const { data } = await axios.get(
-        `/bill/list?date=${state.currentDate}&type_id=${
+        `/bill/list?date=${selectedDate.value}&type_id=${
           selectedType.id || 'all'
-        }&page=${state.page}&page_size=5`
+        }&page=${page.value}&page_size=5`
       )
-      if (state.refreshing) {
+      if (refreshing.value) {
         billList.value = []
-        state.refreshing = false
+        refreshing.value = false
       }
-      state.loading = false
+      loading.value = false
       billList.value = billList.value.concat(data.list)
-      state.totalExpense = data.totalExpense.toFixed(2)
-      state.totalIncome = data.totalIncome.toFixed(2)
-      state.totalPage = data.totalPage
-      if (state.page >= state.totalPage) {
-        state.finished = true
+      totalExpense.value = data.totalExpense.toFixed(2)
+      totalIncome.value = data.totalIncome.toFixed(2)
+      totalPage.value = data.totalPage
+      if (page.value >= totalPage.value) {
+        finished.value = true
       }
     }
 
     const onLoad = () => {
-      if (!state.refreshing && state.page < state.totalPage) {
-        state.page = state.page + 1
+      if (!refreshing.value && page.value < totalPage.value) {
+        page.value = page.value + 1
       }
       getBillList()
     }
 
     const onRefresh = () => {
       // 清空列表数据
-      state.finished = false
+      finished.value = false
       // 页数重制
-      state.page = 1
+      page.value = 1
       // 重新加载数据
       // 将 loading 设置为 true，表示处于加载状态
-      state.refreshing = true
-      state.loading = true
+      refreshing.value = true
+      loading.value = true
       onLoad()
     }
 
     return {
-      ...toRefs(state),
+      totalExpense,
+      totalIncome,
+      page,
+      totalPage,
+      list,
+      loading,
+      finished,
+      refreshing,
+      selectedDate,
       billList,
       selectedType,
       popTypeRef,
@@ -231,7 +230,6 @@ export default {
     overflow-y: scroll;
     background-color: #f5f5f5;
     padding: 10px;
-    // padding-bottom: 50px;
   }
   .add-icon {
     position: fixed;
