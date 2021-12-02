@@ -12,7 +12,7 @@
           }"
           class="icon-wrap"
           ><svg class="icon">
-            <use v-bind:xlink:href="getHref(detail.type_id)" />
+            <use v-bind:xlink:href="getHref(detail)" />
           </svg>
         </span>
         <span class="type-name">{{ detail.type_name || '' }}</span>
@@ -60,7 +60,7 @@ import dayjs from 'dayjs'
 import { typeMap } from '@/utils'
 import axios from '@/utils/axios'
 import { Toast, Dialog } from 'vant'
-import { ReqDetail } from '@/api/bill'
+import { DayBillItem, ReqDetail } from '@/api/bill'
 import PopAdd from '@/views/bill/PopAdd.vue'
 
 export default {
@@ -101,8 +101,9 @@ export default {
         .catch(() => {})
     }
     // 获取类型对应图标名
-    const getHref = (id) => {
-      let iconName = typeMap[id]?.icon
+    const getHref = (item: DayBillItem) => {
+      // 这里与其他 getHref 的不同在于要加问号，尚不明确原因...
+      let iconName = typeMap[item.type_id]?.icon
       return `#icon-${iconName}`
     }
 
