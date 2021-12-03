@@ -42,8 +42,13 @@
 
   <!-- 收支构成图表明细 -->
   <div class="structure">
-    <div class="title">收支构成</div>
-    <div class="bar-graph">
+    <div class="title">
+      {{ totalType === 'expense' ? '支出构成' : '收入构成' }}
+    </div>
+    <!-- 账单占比饼图 -->
+    <div id="pie-chart" style="width: 100%; height: 200px"></div>
+    <!-- 账单占比条形图 -->
+    <div class="bar-chart">
       <div
         class="bill-item"
         v-for="item in totalType === 'expense' ? expenseList : incomeList"
@@ -65,8 +70,8 @@
           <span>{{ item.type_name }}</span>
         </div>
 
-        <span class="progress"
-          ><van-progress
+        <span class="progress">
+          <van-progress
             :percentage="
               Number(
                 (item.number /
@@ -78,10 +83,9 @@
             :show-pivot="false"
             track-color="#ffffff"
             :color="totalType === 'expense' ? '#39be77' : '#ecbe25'"
-        /></span>
-        <span class="amount">
-          ￥{{ Number(item.number).toFixed(2) || 0 }}
+          />
         </span>
+        <span class="amount">￥{{ Number(item.number).toFixed(2) || 0 }}</span>
       </div>
     </div>
   </div>
@@ -95,6 +99,7 @@ import dayjs from 'dayjs'
 import axios from '@/utils/axios'
 import { typeMap } from '@/utils'
 import { DayBillItem } from '@/api/bill'
+import * as echarts from 'echarts'
 
 export default {
   name: 'Data',
@@ -135,6 +140,7 @@ export default {
           monthBillData.incomeList = data.total_data
             .filter((item) => item.pay_type === 2)
             .sort((a, b) => b.number - a.number)
+          setPieChart()
         }
       } catch (error) {
         console.log('error:', error)
@@ -148,12 +154,64 @@ export default {
 
     const changeTotalType = (type) => {
       totalType.value = type
+      setPieChart()
     }
 
     // 获取类型对应图标名
     const getHref = (item: DayBillItem) => {
       let iconName = typeMap[item.type_id].icon
       return `#icon-${iconName}`
+    }
+
+    // 绘制饼图方法
+    const setPieChart = () => {
+      const pieChart = echarts.init(document.getElementById('pie-chart'))
+      console.log(monthBillData.expenseList)
+      const _data =
+        totalType.value == 'expense'
+          ? monthBillData.expenseList
+          : monthBillData.incomeList
+      pieChart.setOption({
+        visualMap: {
+          show: false,
+          min: Math.min(..._data.map((item) => item.number)),
+          max: Math.max(..._data.map((item) => item.number)),
+          inRange: {
+            colorLightness: [0.7, 0.5]
+          }
+        },
+        series: [
+          {
+            type: 'pie',
+            radius: ['30%', '50%'],
+            itemStyle: {
+              color: totalType.value === 'expense' ? '#39be77' : '#ecbe25',
+              borderColor: '#fff',
+              borderWidth: 2
+            },
+            data: _data.map((item) => {
+              return {
+                value: item.number,
+                name: item.type_name
+              }
+            }),
+            label: {
+              color: '#ccc',
+              position: 'outside',
+              formatter: '{b} {d}%',
+              fontWeight: 500
+            },
+            labelLine: {
+              lineStyle: {
+                color: '#ccc'
+              },
+              showAbove: false,
+              length: 10,
+              length2: 15
+            }
+          }
+        ]
+      })
     }
 
     return {
@@ -190,7 +248,7 @@ export default {
         padding: 4px 10px;
         font-size: 12px;
         border-radius: 2px;
-        color: @color-text-secondary; // TODO 修改颜色
+        opacity: 0.5;
       }
       .expense {
         margin-right: 6px;
@@ -198,6 +256,7 @@ export default {
           background-color: lighten(@primary, 4%);
           border-color: @primary;
           color: #fff;
+          opacity: 1;
         }
       }
       .income {
@@ -205,6 +264,7 @@ export default {
           background-color: lighten(@text-warning, 4%);
           border-color: @text-warning;
           color: #fff;
+          opacity: 1;
         }
       }
     }
@@ -215,7 +275,8 @@ export default {
     margin-top: 20px;
 
     .title {
-      color: @color-text-secondary;
+      // color: @color-text-light;
+      opacity: 0.5;
     }
     .total-amount {
       margin-top: 10px;
@@ -232,13 +293,13 @@ export default {
     margin-bottom: 20px;
     font-size: 16px;
   }
-  .bar-graph {
+  .bar-chart {
+    padding-bottom: 100px;
     .bill-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
       height: 40px;
-
       .type-item {
         display: flex;
         align-items: center;
