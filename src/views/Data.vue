@@ -2,8 +2,8 @@
   <div
     class="header"
     :class="{
-      'expense-background': totalType == 'expense',
-      'income-background': totalType == 'income'
+      'expense-background': curPayType == 'expense',
+      'income-background': curPayType == 'income'
     }"
   >
     <!-- 筛选日期收支类型 -->
@@ -17,14 +17,14 @@
       <span class="type-tab">
         <span
           class="expense"
-          :class="{ active: totalType == 'expense' }"
-          @click="changeTotalType('expense')"
+          :class="{ active: curPayType == 'expense' }"
+          @click="changeCurPayType('expense')"
           >支出</span
         >
         <span
           class="income"
-          :class="{ active: totalType == 'income' }"
-          @click="changeTotalType('income')"
+          :class="{ active: curPayType == 'income' }"
+          @click="changeCurPayType('income')"
           >收入</span
         >
       </span>
@@ -32,26 +32,30 @@
     <!-- 总收支展示 -->
     <div class="total-wrap">
       <div class="title">
-        {{ totalType === 'expense' ? '共支出' : '共收入' }}
+        {{ curPayType === 'expense' ? '共支出' : '共收入' }}
       </div>
       <div class="total-amount">
-        ¥{{ totalType === 'expense' ? totalExpense : totalIncome }}
+        ¥{{ curPayType === 'expense' ? totalExpense : totalIncome }}
       </div>
     </div>
   </div>
 
   <!-- 收支构成图表明细 -->
-  <div class="structure">
+  <div class="structure" v-if="curTotal > 0">
     <div class="title">
-      {{ totalType === 'expense' ? '支出构成' : '收入构成' }}
+      {{ curPayType === 'expense' ? '支出构成' : '收入构成' }}
     </div>
     <!-- 账单占比饼图 -->
-    <div id="pie-chart" style="width: 100%; height: 200px"></div>
+    <div
+      id="pie-chart"
+      style="width: 100%; height: 200px"
+      v-if="curTotal > 0"
+    ></div>
     <!-- 账单占比条形图 -->
-    <div class="bar-chart">
+    <div class="proportion-bar">
       <div
         class="bill-item"
-        v-for="item in totalType === 'expense' ? expenseList : incomeList"
+        v-for="item in curPayType === 'expense' ? expenseList : incomeList"
         :key="item.type_id"
       >
         <!-- 类型图标和名字 -->
@@ -59,8 +63,8 @@
           <span
             class="icon-wrap"
             :class="{
-              expense: totalType == 'expense',
-              income: totalType == 'income'
+              expense: curPayType == 'expense',
+              income: curPayType == 'income'
             }"
           >
             <svg class="type-icon icon">
@@ -75,31 +79,52 @@
             :percentage="
               Number(
                 (item.number /
-                  Number(totalType == 'expense' ? totalExpense : totalIncome)) *
+                  Number(
+                    curPayType == 'expense' ? totalExpense : totalIncome
+                  )) *
                   100
               )
             "
             stroke-width="6px"
             :show-pivot="false"
             track-color="#ffffff"
-            :color="totalType === 'expense' ? '#39be77' : '#ecbe25'"
+            :color="curPayType === 'expense' ? '#39be77' : '#ecbe25'"
           />
         </span>
         <span class="amount">￥{{ Number(item.number).toFixed(2) || 0 }}</span>
       </div>
     </div>
   </div>
+  <div class="empty" v-else>
+    <div class="icon-wrap">
+      <svg class="icon">
+        <use xlink:href="#icon-empty" />
+      </svg>
+    </div>
+    {{ `暂无${curPayType === 'expense' ? '支出' : '收入'}账单` }}
+    <div
+      class="empty-button"
+      :class="{
+        'expense-background': curPayType == 'expense',
+        'income-background': curPayType == 'income'
+      }"
+      @click="$router.push('/home')"
+    >
+      去记账
+    </div>
+  </div>
   <PopDate ref="popDateRef" @select-date="handleSelectDate" />
 </template>
 
 <script lang="ts">
-import { ref, onMounted, reactive, toRefs } from 'vue'
+import { ref, onMounted, reactive, toRefs, computed } from 'vue'
 import PopDate from '@/components/PopDate.vue'
 import dayjs from 'dayjs'
 import axios from '@/utils/axios'
 import { typeMap } from '@/utils'
 import { DayBillItem } from '@/api/bill'
 import * as echarts from 'echarts'
+import { useRouter } from 'vue-router'
 
 export default {
   name: 'Data',
@@ -108,16 +133,19 @@ export default {
   },
   setup() {
     const popDateRef = ref(null)
-    const selectedDate = ref(new Date())
-    const totalType = ref('expense')
-    // const expenseColor = ref() 或许可以尝试使用变量设置类名
-    // const totalExpense = ref(0)
-    // const totalIncome = ref(0)
+    const selectedDate = ref(dayjs().format('YYYY-MM'))
+    const curPayType = ref('expense')
+    const router = useRouter()
     const monthBillData = reactive({
       expenseList: [],
       incomeList: [],
       totalExpense: 0,
       totalIncome: 0
+    })
+    const curTotal = computed(() => {
+      return curPayType.value === 'expense'
+        ? monthBillData.totalExpense
+        : monthBillData.totalIncome
     })
 
     onMounted(() => {
@@ -140,21 +168,26 @@ export default {
           monthBillData.incomeList = data.total_data
             .filter((item) => item.pay_type === 2)
             .sort((a, b) => b.number - a.number)
-          setPieChart()
         }
       } catch (error) {
         console.log('error:', error)
+      } finally {
+        // DOM 还没挂载完成，延迟一会再初始化图表
+        setTimeout(() => {
+          setPieChart()
+        }, 0)
       }
     }
 
-    const handleSelectDate = (date: Date) => {
+    const handleSelectDate = (date: string) => {
       selectedDate.value = date
       getMouthBillData()
     }
 
-    const changeTotalType = (type) => {
-      totalType.value = type
-      setPieChart()
+    const changeCurPayType = (type: 'expense' | 'income') => {
+      curPayType.value = type
+      // DOM 还没挂载完成，延迟一会再初始化图表
+      setTimeout(() => setPieChart(), 0)
     }
 
     // 获取类型对应图标名
@@ -165,10 +198,13 @@ export default {
 
     // 绘制饼图方法
     const setPieChart = () => {
+      // 如果支出或者收入为 0，则不渲染
+      if (curTotal.value === 0) {
+        return
+      }
       const pieChart = echarts.init(document.getElementById('pie-chart'))
-      console.log(monthBillData.expenseList)
       const _data =
-        totalType.value == 'expense'
+        curPayType.value == 'expense'
           ? monthBillData.expenseList
           : monthBillData.incomeList
       pieChart.setOption({
@@ -183,9 +219,9 @@ export default {
         series: [
           {
             type: 'pie',
-            radius: ['30%', '50%'],
+            radius: ['40%', '65%'],
             itemStyle: {
-              color: totalType.value === 'expense' ? '#39be77' : '#ecbe25',
+              color: curPayType.value === 'expense' ? '#39be77' : '#ecbe25',
               borderColor: '#fff',
               borderWidth: 2
             },
@@ -205,9 +241,9 @@ export default {
               lineStyle: {
                 color: '#ccc'
               },
-              showAbove: false,
-              length: 10,
-              length2: 15
+              showAbove: true,
+              length: 20,
+              length2: 5
             }
           }
         ]
@@ -216,13 +252,14 @@ export default {
 
     return {
       ...toRefs(monthBillData),
-      totalType,
+      curPayType,
       dayjs,
       selectedDate,
       popDateRef,
       handleSelectDate,
-      changeTotalType,
-      getHref
+      changeCurPayType,
+      getHref,
+      curTotal
     }
   }
 }
@@ -286,15 +323,14 @@ export default {
   }
 }
 .structure {
-  margin: 20px;
   background-color: #fff;
 
   .title {
-    margin-bottom: 20px;
+    padding: 20px;
     font-size: 16px;
   }
-  .bar-chart {
-    padding-bottom: 100px;
+  .proportion-bar {
+    padding: 0 20px 100px 20px;
     .bill-item {
       display: flex;
       justify-content: space-between;
@@ -334,6 +370,25 @@ export default {
         text-align: right;
       }
     }
+  }
+}
+.empty {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  color: @color-text-caption;
+
+  .icon-wrap {
+    font-size: 40px;
+  }
+  .empty-button {
+    margin-top: 20px;
+    padding: 6px 12px;
+    font-size: 14px;
+    color: #fff;
+    border-radius: 2px;
   }
 }
 </style>

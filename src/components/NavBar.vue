@@ -1,17 +1,19 @@
 <template>
   <van-tabbar v-model="active">
-    <van-tabbar-item icon="notes-o" @click="link('/home')"
+    <van-tabbar-item name="/home" icon="notes-o" @click="link('/home')"
       >明细</van-tabbar-item
     >
-    <van-tabbar-item icon="bar-chart-o" @click="link('/data')"
+    <van-tabbar-item name="/data" icon="bar-chart-o" @click="link('/data')"
       >统计</van-tabbar-item
     >
-    <van-tabbar-item icon="user-o" @click="link('/user')">我的</van-tabbar-item>
+    <van-tabbar-item name="/user" icon="user-o" @click="link('/user')"
+      >我的</van-tabbar-item
+    >
   </van-tabbar>
 </template>
 
 <script lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 export default {
@@ -21,11 +23,19 @@ export default {
   },
   setup() {
     const router = useRouter()
-    const active = ref(0)
+    const active = ref('/home')
 
     const link = (path) => {
       router.push({ path })
     }
+
+    onMounted(() => {
+      active.value = router.currentRoute.value.path
+    })
+
+    router.afterEach(() => {
+      active.value = router.currentRoute.value.path
+    })
 
     return {
       active,
@@ -47,8 +57,8 @@ export default {
 // }
 </script>
 <style lang="less">
-  @import url('@/config/custom.less');
-  .van-tabbar-item--active {
-    color: @primary!important;
-  }
+@import url('@/config/custom.less');
+.van-tabbar-item--active {
+  color: @primary!important;
+}
 </style>

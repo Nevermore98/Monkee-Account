@@ -5,11 +5,11 @@
       <div class="today-total">
         <span>
           <b>支</b>
-          {{ totalExpense.toFixed(2) }}
+          {{ dayTotalExpense.toFixed(2) }}
         </span>
         <span>
           <b>收</b>
-          {{ totalIncome.toFixed(2) }}
+          {{ dayTotalIncome.toFixed(2) }}
         </span>
       </div>
     </div>
@@ -71,7 +71,7 @@ export default {
     // 可以改为 计算属性
     const createAtDate = dayjs(dayBillList.date).format('M月D日')
 
-    const totalExpense = computed(() => {
+    const dayTotalExpense = computed(() => {
       return props.dayBillList.bills.reduce(
         (cur: number, dayBillItem: DayBillItem) => {
           if (dayBillItem.pay_type === 1) cur += Number(dayBillItem?.amount)
@@ -80,7 +80,7 @@ export default {
         0
       )
     })
-    const totalIncome = computed(() => {
+    const dayTotalIncome = computed(() => {
       return props.dayBillList.bills.reduce(
         (cur: number, dayBillItem: DayBillItem) => {
           if (dayBillItem.pay_type === 2) cur += Number(dayBillItem?.amount)
@@ -106,8 +106,8 @@ export default {
     return {
       createAtDate,
       createAtDay,
-      totalExpense,
-      totalIncome,
+      dayTotalExpense,
+      dayTotalIncome,
       goToDetail,
       dayjs,
       getHref

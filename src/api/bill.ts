@@ -30,8 +30,8 @@ export interface DayBillList {
 /** 多日账单 */
 export type BillList = DayBillList[]
 
-/** 请求到的数据 */
-export interface RequestData {
+/** 请求到的 单月账单 */
+export interface RequestMonthData {
   list: BillList
   totalExpense: number
   totalIncome: number

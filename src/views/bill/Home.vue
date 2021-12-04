@@ -16,8 +16,8 @@
             <use xlink:href="#icon-sort-down" />
           </svg>
         </span>
-        <span class="expense">总支出 ￥{{ totalExpense }}</span>
-        <span class="income">总收入 ￥{{ totalIncome }}</span>
+        <span class="expense">总支出 ￥{{ monthTotalExpense }}</span>
+        <span class="income">总收入 ￥{{ monthTotalIncome }}</span>
       </div>
     </div>
     <!-- 账单列表 -->
@@ -72,8 +72,8 @@ export default {
     const popAddRef = ref(null)
 
     const billList = ref<BillList>([])
-    const totalExpense = ref(0)
-    const totalIncome = ref(0)
+    const monthTotalExpense = ref(0)
+    const monthTotalIncome = ref(0)
     const page = ref(1)
     const totalPage = ref(0)
     const list = ref([])
@@ -106,7 +106,7 @@ export default {
       const { data } = await axios.get(
         `/bill/list?date=${selectedDate.value}&type_id=${
           selectedType.id || 'all'
-        }&page=${page.value}&page_size=5`
+        }&page=${page.value}&page_size=31`
       )
       if (refreshing.value) {
         billList.value = []
@@ -114,8 +114,8 @@ export default {
       }
       loading.value = false
       billList.value = billList.value.concat(data.list)
-      totalExpense.value = data.totalExpense.toFixed(2)
-      totalIncome.value = data.totalIncome.toFixed(2)
+      monthTotalExpense.value = data.totalExpense.toFixed(2)
+      monthTotalIncome.value = data.totalIncome.toFixed(2)
       totalPage.value = data.totalPage
       if (page.value >= totalPage.value) {
         finished.value = true
@@ -142,8 +142,8 @@ export default {
     }
 
     return {
-      totalExpense,
-      totalIncome,
+      monthTotalExpense,
+      monthTotalIncome,
       page,
       totalPage,
       list,
