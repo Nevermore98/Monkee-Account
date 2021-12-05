@@ -1,7 +1,7 @@
 <template>
   <div class="verify-canvas">
     <canvas
-      ref="verifyRef"
+      ref="verifyCanvasRef"
       :width="width"
       :height="height"
       @click="handleDraw"
@@ -12,7 +12,7 @@
 import { reactive, onMounted, ref, toRefs } from 'vue'
 export default {
   setup() {
-    const verifyRef = ref(null)
+    const verifyCanvasRef = ref(null)
     const state = reactive({
       pool: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890', // 字符串
       width: 120,
@@ -43,7 +43,7 @@ export default {
 
     // 绘制验证码
     const draw = () => {
-      const ctx = verifyRef.value.getContext('2d')
+      const ctx = verifyCanvasRef.value.getContext('2d')
       ctx.fillStyle = randomColor(180, 230)
       ctx.fillRect(0, 0, state.width, state.height)
       let verifyCode = ''
@@ -95,7 +95,7 @@ export default {
 
     return {
       ...toRefs(state),
-      verifyRef,
+      verifyCanvasRef,
       handleDraw
     }
   }

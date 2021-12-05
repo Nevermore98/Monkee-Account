@@ -70,7 +70,7 @@
           clearable
           label="验证码"
           placeholder="输入验证码"
-          v-model="verify"
+          v-model="verifyInput"
           autocomplete="on"
         >
           <template #button>
@@ -107,14 +107,13 @@ export default {
       username: '',
       password: '',
       type: 'register', // 登录注册模式切换参数
-      verify: '', // 验证码输入框输入的内容
+      verifyInput: '', // 验证码输入框输入的内容
       verifyCode: '', // 生成的验证图片内的文字
       loading: false
     })
 
     // 提交登录 or 注册表单
     const onSubmit = async (values) => {
-      state.verifyCode = verifyRef.value.verifyCode || ''
       try {
         if (state.type === 'login') {
           const { data } = await axios.post('/user/login', {
@@ -127,7 +126,7 @@ export default {
           state.verifyCode = verifyRef.value.verifyCode || ''
           if (
             verifyRef.value.verifyCode.toLowerCase() !==
-            state.verify.toLowerCase()
+            state.verifyInput.toLowerCase()
           ) {
             Toast.fail('验证码错误')
             return
@@ -142,7 +141,7 @@ export default {
           state.loading = false
         }
       } catch (error) {
-        // state.loading = false
+        state.loading = false
       }
     }
     // 切换登录和注册两种模式
@@ -180,7 +179,7 @@ export default {
       // }
       // .van-cell:last-child {
       //   padding-bottom: 20px;
-      // }
+      // } 
     }
   }
   .button-wrap {

@@ -20,7 +20,21 @@ const router = createRouter({
     {
       path: '/user',
       component: () =>
-        import(/* webpackChunkName: "user-chunk" */ '@/views/User.vue')
+        import(/* webpackChunkName: "user-chunk" */ '@/views/user/User.vue')
+    },
+    {
+      path: '/modifyPassword',
+      component: () =>
+        import(
+          /* webpackChunkName: "user-chunk" */ '@/views/user/ModifyPassword.vue'
+        )
+    },
+    {
+      path: '/about',
+      component: () =>
+        import(
+          /* webpackChunkName: "user-chunk" */ '@/views/user/About.vue'
+        )
     },
     {
       path: '/login',

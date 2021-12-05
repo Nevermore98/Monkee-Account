@@ -22,7 +22,9 @@ import {
   ConfigProvider,
   NumberKeyboard,
   Empty,
-  Progress
+  Progress,
+  Dialog,
+  Divider
 } from 'vant'
 import 'vant/lib/index.css' // 全局引入样式
 import '@/index.less'
@@ -49,5 +51,7 @@ app.use(ConfigProvider)
 app.use(NumberKeyboard)
 app.use(Empty)
 app.use(Progress)
+app.use(Dialog)
+app.use(Divider)
 
 app.mount('#app')

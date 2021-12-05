@@ -25,7 +25,12 @@ export default {
     // 优化为以下：
 
     const isShowNavBar = ref(true)
-    const noShowTabbarRouteList = ['/login', '/detail']
+    const noShowTabbarRouteList = [
+      '/login',
+      '/detail',
+      '/about',
+      '/modifyPassword'
+    ]
     const router = useRouter()
     router.afterEach(() => {
       isShowNavBar.value = !noShowTabbarRouteList.includes(
