@@ -125,7 +125,7 @@
 <script lang="ts">
 import { onMounted, ref, computed, watch, PropType } from 'vue'
 import dayjs from 'dayjs'
-import { Icon, Toast } from 'vant'
+import { Button, Icon, Toast } from 'vant'
 import axios from 'axios'
 import { typeMap } from '@/utils/index'
 import { BillType, BillTypeList, DayBillItem } from '@/api/bill'
@@ -175,6 +175,8 @@ export default {
     // 切换收支类型
     const changeType = (type: string) => {
       payType.value = type
+      // TODO 直接操作 DOM 可以实现切换确认键颜色
+      changeConfirmButtonColor()
     }
     // 选择收支类型具体图标
     const chooseTypeIcon = (item: BillType) => {
@@ -183,6 +185,17 @@ export default {
     const getHref = (item: BillType) => {
       let iconName = typeMap[item.id].icon
       return `#icon-${iconName}`
+    }
+
+    const changeConfirmButtonColor = () => {
+      const button = document.querySelector('.van-key--blue')
+      if (payType.value === 'expense') {
+        button.classList.add('expense-background')
+        button.classList.remove('income-background')
+      } else {
+        button.classList.add('income-background')
+        button.classList.remove('expense-background')
+      }
     }
 
     // 自定义日历主题
@@ -201,8 +214,14 @@ export default {
     //   numberPadButtonColor.value === 'expense' ? '#39be77' : '#ecbe25'
     // })
 
+    const getNumberButtonColor = () => {
+      console.log(payType.value)
+      return payType.value === 'expense' ? '#39be77' : '#ecbe25'
+    }
+
     const NumberPadThemeVars = {
-      NumberKeyboardButtonBackgroundColor: '#39be77'
+      // NumberKeyboardButtonBackgroundColor:
+      //   payType.value === 'expense' ? '#fff' : '#ecbe25'
     }
 
     const minDate = new Date(2021, 5, 1)
@@ -244,7 +263,7 @@ export default {
           billAmount.value.length >= 6 &&
           billAmount.value.indexOf('.') === -1
         ) {
-          Toast.fail('输入金额不能大于1,000,000')
+          Toast.fail('金额不能大于1,000,000')
           return billAmount.value
         }
         // 保留小数点后两位
@@ -273,11 +292,11 @@ export default {
 
     const addBill = async () => {
       if (!billAmount.value) {
-        Toast.fail('请输入具体金额')
+        Toast.fail('请输入金额')
         return
       }
       if (Number(billAmount.value).toFixed() === '0') {
-        Toast.fail('输入金额不能为零')
+        Toast.fail('金额不能为零')
         return
       }
       if (!selectedType.value) {
@@ -322,6 +341,9 @@ export default {
       isShowAdd.value = false
       selectedDate.value = new Date()
       remark.value = ''
+      document
+        .querySelector('.van-key--blue')
+        .classList.remove('expense-background', 'income-background')
     }
     // 弹出添加账单而不确定，直接关闭则清空数据，在账单详情里则不清空
     const clearPopAddInHome = () => {
@@ -531,5 +553,17 @@ export default {
   position: absolute;
   top: 0;
   right: 0;
+}
+// @bgc: `payType.value === 'expense' ? '#39be77': '#ecbe25' `;
+
+// 初始化确认键颜色
+.van-key--blue {
+  background: @primary;
+}
+.expense-background {
+  background: @primary!important;
+}
+.income-background {
+  background: @text-warning!important;
 }
 </style>

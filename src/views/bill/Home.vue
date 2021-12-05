@@ -38,8 +38,11 @@
       </van-pull-refresh>
     </div>
     <!-- 添加账单按钮 -->
-    <div class="add-icon" @click="popAddRef.isShowAdd = true">
-      <van-icon name="records" />
+    <div class="add-wrap" @click="popAddRef.isShowAdd = true">
+      <svg class="icon add-icon">
+        <use xlink:href="#icon-add-bill" />
+      </svg>
+      记一笔
     </div>
 
     <PopType ref="popTypeRef" @select-type="handleSelectType" />
@@ -231,21 +234,25 @@ export default {
     background-color: #f5f5f5;
     padding: 10px;
   }
-  .add-icon {
-    position: fixed;
-    bottom: 100px;
-    right: 30px;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: 1px solid #e9e9e9;
+  .add-wrap {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 20px;
+    position: fixed;
+    right: 20px;
+    bottom: 100px;
+    padding: 4px 12px;
+    height: 42px;
+    border-radius: 999px;
+    border: 1px solid #e9e9e9;
+    font-size: 14px;
     background-color: #fff;
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
     color: @primary;
+    .add-icon {
+      font-size: 18px;
+      margin-right: 4px;
+    }
   }
 }
 </style>

@@ -68,7 +68,7 @@ export default {
     const userInfo = reactive({
       id: 0,
       username: '',
-      signature: '深自缄默，如云漂泊。'
+      signature: ''
     })
     const isShowSignature = ref(false)
     const router = useRouter()

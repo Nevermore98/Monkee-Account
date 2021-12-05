@@ -29,4 +29,11 @@ export default defineConfig({
       "dirs": path.resolve(__dirname, "src/directives"),
     },
   },
+  css: {
+    preprocessorOptions: {
+      less: {
+        javascriptEnabled: true,
+      }
+    },
+  },
 })

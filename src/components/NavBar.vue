@@ -1,14 +1,27 @@
 <template>
   <van-tabbar v-model="active">
-    <van-tabbar-item name="/home" icon="notes-o" @click="link('/home')"
-      >明细</van-tabbar-item
-    >
+    <van-tabbar-item name="/home" @click="link('/home')"
+      >明细
+      <template #icon>
+        <svg class="icon">
+          <use xlink:href="#icon-bill" />
+        </svg>
+      </template>
+    </van-tabbar-item>
     <van-tabbar-item name="/data" icon="bar-chart-o" @click="link('/data')"
-      >统计</van-tabbar-item
-    >
+      >统计
+      <template #icon>
+        <svg class="icon">
+          <use xlink:href="#icon-statistic" />
+        </svg> </template
+    ></van-tabbar-item>
     <van-tabbar-item name="/user" icon="user-o" @click="link('/user')"
-      >我的</van-tabbar-item
-    >
+      >我的
+      <template #icon>
+        <svg class="icon">
+          <use xlink:href="#icon-user" />
+        </svg> </template
+    ></van-tabbar-item>
   </van-tabbar>
 </template>
 
@@ -43,22 +56,11 @@ export default {
     }
   }
 }
-
-// script-setup
-// const props = defineProps({
-//   msg: String,
-// })
-
-// const router = useRouter()
-// const active = ref('/home')
-
-// const link = (path) => {
-//   router.push({ path })
-// }
 </script>
 <style lang="less">
 @import url('@/config/custom.less');
 .van-tabbar-item--active {
   color: @primary!important;
+  background-color: @primary;
 }
 </style>

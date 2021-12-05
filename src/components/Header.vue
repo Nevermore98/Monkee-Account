@@ -1,18 +1,7 @@
 <template>
   <div class="block"></div>
 
-  <van-nav-bar
-    class="header"
-    @click-left="goBack"
-    :title="title"
-    left-text="返回"
-    left-arrow
-  >
-    <template #right>
-      <svg class="icon-more">
-        <use xlink:href="#icon-more"></use>
-      </svg>
-    </template>
+  <van-nav-bar class="header" @click-left="goBack" :title="title" left-arrow>
   </van-nav-bar>
 </template>
 
@@ -46,9 +35,15 @@ export default {
   top: 0;
   left: 0;
   width: 100%;
-  .icon-more {
-    width: 22px;
-    height: 22px;
-  }
+}
+</style>
+<style lang="less">
+@import url('@/config/custom.less');
+
+.van-nav-bar .van-icon {
+  color: @color-text-base;
+}
+.van-nav-bar__arrow {
+  font-size: 20px;
 }
 </style>
