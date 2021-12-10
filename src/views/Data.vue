@@ -202,52 +202,54 @@ export default {
       if (curTotal.value === 0) {
         return
       }
-      const pieChart = echarts.init(document.getElementById('pie-chart'))
-      const _data =
-        curPayType.value == 'expense'
-          ? monthBillData.expenseList
-          : monthBillData.incomeList
-      pieChart.setOption({
-        visualMap: {
-          show: false,
-          min: Math.min(..._data.map((item) => item.number)),
-          max: Math.max(..._data.map((item) => item.number)),
-          inRange: {
-            colorLightness: [0.7, 0.5]
-          }
-        },
-        series: [
-          {
-            type: 'pie',
-            radius: ['40%', '65%'],
-            itemStyle: {
-              color: curPayType.value === 'expense' ? '#39be77' : '#ecbe25',
-              borderColor: '#fff',
-              borderWidth: 2
-            },
-            data: _data.map((item) => {
-              return {
-                value: item.number,
-                name: item.type_name
-              }
-            }),
-            label: {
-              color: '#ccc',
-              position: 'outside',
-              formatter: '{b} {d}%',
-              fontWeight: 500
-            },
-            labelLine: {
-              lineStyle: {
-                color: '#ccc'
-              },
-              showAbove: true,
-              length: 20,
-              length2: 5
+      try {
+        const pieChart = echarts.init(document.getElementById('pie-chart'))
+        const _data =
+          curPayType.value == 'expense'
+            ? monthBillData.expenseList
+            : monthBillData.incomeList
+        pieChart.setOption({
+          visualMap: {
+            show: false,
+            min: Math.min(..._data.map((item) => item.number)),
+            max: Math.max(..._data.map((item) => item.number)),
+            inRange: {
+              colorLightness: [0.7, 0.5]
             }
-          }
-        ]
-      })
+          },
+          series: [
+            {
+              type: 'pie',
+              radius: ['40%', '65%'],
+              itemStyle: {
+                color: curPayType.value === 'expense' ? '#39be77' : '#ecbe25',
+                borderColor: '#fff',
+                borderWidth: 2
+              },
+              data: _data.map((item) => {
+                return {
+                  value: item.number,
+                  name: item.type_name
+                }
+              }),
+              label: {
+                color: '#ccc',
+                position: 'outside',
+                formatter: '{b} {d}%',
+                fontWeight: 500
+              },
+              labelLine: {
+                lineStyle: {
+                  color: '#ccc'
+                },
+                showAbove: true,
+                length: 20,
+                length2: 5
+              }
+            }
+          ]
+        })
+      } catch {}
     }
 
     return {

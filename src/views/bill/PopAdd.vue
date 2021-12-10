@@ -343,7 +343,7 @@ export default {
       remark.value = ''
       document
         .querySelector('.van-key--blue')
-        .classList.remove('expense-background', 'income-background')
+        .classList.remove('expense-background', 'expense-background')
     }
     // 弹出添加账单而不确定，直接关闭则清空数据，在账单详情里则不清空
     const clearPopAddInHome = () => {

@@ -3,6 +3,7 @@ import App from '@/App.vue'
 import dayjs from 'dayjs'
 import 'lib-flexible/flexible'
 import router from '@/router'
+import 'default-passive-events'
 import {
   Button,
   Tabbar,

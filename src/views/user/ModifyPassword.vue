@@ -111,18 +111,20 @@ export default {
 
 <style lang="less" scoped>
 .edit {
-  padding: 20px 10px 20px 10px;
   height: 100%;
   background-color: #f5f5f5;
 
   .edit-wrap {
+    padding: 20px;
     min-height: 200px;
   }
 }
 .btn-wrap {
-  position: relative;
-
   padding: 0px 20px;
-  margin-bottom: 20px;
+}
+</style>
+<style lang="less">
+.van-field__label {
+  width: 70px;
 }
 </style>

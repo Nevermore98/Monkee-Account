@@ -99,7 +99,8 @@ export default {
       })
     }
     const getHref = (item: DayBillItem) => {
-      let iconName = typeMap[item.type_id].icon
+      // 偶现 typeMap[item.type_id] 为 undefined 的 bug，使用 ?. 确保无报错
+      let iconName = typeMap[item.type_id]?.icon
       return `#icon-${iconName}`
     }
 

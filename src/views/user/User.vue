@@ -117,14 +117,10 @@ export default {
 .user {
   min-height: 100%;
   background-color: #f5f5f5;
-  // padding: 12px;
   .head {
     display: flex;
-    // background: linear-gradient(315deg, #7fcea4 0%, #39be77 100%);
     background-color: #fff;
     padding: 20px;
-    // border-radius: 4px;
-    // margin-bottom: 12px;
     .avatar {
       display: flex;
       align-items: center;
@@ -132,7 +128,6 @@ export default {
       width: 60px;
       height: 60px;
       border-radius: 50%;
-      // border: 3px solid #fff;
       margin-right: 10px;
     }
     .info {
@@ -141,12 +136,10 @@ export default {
       justify-content: space-around;
       .name {
         font-size: 18px;
-        // color: #fff;
         font-weight: 500;
       }
       .signature {
         color: #fff;
-        // background: rgba(0, 0, 0, 0.1);
         background-color: @primary;
         padding: 1px 5px;
         border-radius: 10px;
@@ -155,7 +148,6 @@ export default {
   }
   .content {
     margin-top: 20px;
-    font-size: 40px;
   }
   .btn-wrap {
     margin-top: 20px;
@@ -164,13 +156,6 @@ export default {
 </style>
 <style lang="less">
 @import url('@/config/custom.less');
-
-// .rate {
-//   .van-dialog__content {
-//     text-align: center;
-//     padding: 20px 0;
-//   }
-// }
 
 .van-dialog__confirm {
   color: @primary;
