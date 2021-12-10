@@ -106,22 +106,30 @@ export default {
     const addToggle = () => {}
 
     const getBillList = async () => {
-      const { data } = await axios.get(
-        `/bill/list?date=${selectedDate.value}&type_id=${
-          selectedType.id || 'all'
-        }&page=${page.value}&page_size=31`
-      )
-      if (refreshing.value) {
-        billList.value = []
-        refreshing.value = false
-      }
-      loading.value = false
-      billList.value = billList.value.concat(data.list)
-      monthTotalExpense.value = data.totalExpense.toFixed(2)
-      monthTotalIncome.value = data.totalIncome.toFixed(2)
-      totalPage.value = data.totalPage
-      if (page.value >= totalPage.value) {
-        finished.value = true
+      try {
+        const { data } = await axios.get(
+          `/bill/list?date=${selectedDate.value}&type_id=${
+            selectedType.id || 'all'
+          }&page=${page.value}&page_size=31`
+        )
+        if (refreshing.value) {
+          billList.value = []
+          refreshing.value = false
+        }
+        loading.value = false
+        billList.value = billList.value.concat(data.list)
+        monthTotalExpense.value = data.totalExpense.toFixed(2)
+        monthTotalIncome.value = data.totalIncome.toFixed(2)
+        totalPage.value = data.totalPage
+      } catch (error) {
+        console.log(error)
+      } finally {
+        if (page.value < totalPage.value) {
+          page.value += 1
+        } else {
+          finished.value = true
+        }
+        loading.value = false
       }
     }
 

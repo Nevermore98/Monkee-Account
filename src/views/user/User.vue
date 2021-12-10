@@ -62,6 +62,7 @@
 import { computed, onMounted, reactive, ref, toRefs } from 'vue'
 import axios from '@/utils/axios'
 import { useRouter } from 'vue-router'
+import { Toast } from 'vant'
 export default {
   name: 'User',
   setup() {
@@ -86,8 +87,11 @@ export default {
     // 获取用户信息
     const getUserInfo = async () => {
       const { data } = await axios.get('/user/get_userinfo')
-      Object.assign(userInfo, data)
-      console.log(data)
+      try {
+        Object.assign(userInfo, data)
+      } catch (error) {
+        console.log(error)
+      }
     }
 
     const confirmSignature = async () => {
@@ -95,6 +99,7 @@ export default {
         signature: userInfo.signature
       })
       Object.assign(userInfo, data)
+      Toast.success('修改成功')
     }
 
     const logout = () => {

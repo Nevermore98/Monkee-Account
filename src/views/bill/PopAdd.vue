@@ -143,7 +143,7 @@ export default {
     const payType = ref('expense')
     const selectedDate = ref(new Date())
     const billAmount = ref('')
-    const selectedType = ref<BillType>({})
+    const selectedType = ref<BillType>(null)
     const expenseList = ref<BillTypeList>([])
     const incomeList = ref<BillTypeList>([])
     const remark = ref('')
@@ -154,8 +154,8 @@ export default {
       () => {
         if (id) {
           billAmount.value = props.initData.amount || ''
-          selectedType.value.id = props.initData.type_id || 0
-          selectedType.value.name = props.initData.type_name || ''
+          selectedType.value!.id = props.initData.type_id || 0
+          selectedType.value!.name = props.initData.type_name || ''
           selectedDate.value = dayjs(Number(props.initData.date)).$d
           remark.value = props.initData.remark || ''
           payType.value = props.initData.pay_type === 1 ? 'expense' : 'income'
@@ -300,7 +300,8 @@ export default {
         return
       }
       if (!selectedType.value) {
-        Toast.fail('请选择收支类型')
+        console.log('fuck')
+        Toast.fail('请选择类型')
         return
       }
 
@@ -312,20 +313,24 @@ export default {
         pay_type: payType.value == 'expense' ? 1 : 2, // 支出或收入
         remark: remark.value || ''
       }
-      if (id) {
-        params.id = id
-        // 如果有 id 即是在编辑账单详情，需要调用详情更新接口
-        const result = await axios.post('/bill/update', params)
-        isShowAdd.value = false
-        Toast.success('修改成功')
-        ctx.emit('refresh')
-      } else {
-        const result = await axios.post('/bill/add', params)
-        // 调完接口之后清空数据
-        clearPopAdd()
-        Toast.success('添加成功')
-        // 向首页发送事件，刷新账单页
-        ctx.emit('refresh')
+      try {
+        if (id) {
+          params.id = id
+          // 如果有 id 即是在编辑账单详情，需要调用详情更新接口
+          const result = await axios.post('/bill/update', params)
+          isShowAdd.value = false
+          Toast.success('修改成功')
+          ctx.emit('refresh')
+        } else {
+          const result = await axios.post('/bill/add', params)
+          // 调完接口之后清空数据
+          clearPopAdd()
+          Toast.success('添加成功')
+          // 向首页发送事件，刷新账单页
+          ctx.emit('refresh')
+        }
+      } catch (error) {
+        console.log(error)
       }
     }
 

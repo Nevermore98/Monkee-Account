@@ -84,15 +84,20 @@ export default {
         Toast.fail('输入不能为空')
         return
       }
-      const { data, code } = axios.post('/user/modify_pass', {
-        old_pass: oldPassword.value,
-        new_pass: newPassword.value,
-        new_pass2: repeatPassword.value
-      })
-      if (code === 200) {
-        console.log(data)
-        router.push({ path: '/user' })
-        Toast.success('修改成功')
+      try {
+        const { data, code } = axios.post('/user/modify_pass', {
+          old_pass: oldPassword.value,
+          new_pass: newPassword.value,
+          new_pass2: repeatPassword.value
+        })
+        if (code !== 400) {
+          Toast.success('修改成功')
+          setTimeout(() => {
+            router.push('/user')
+          }, 300)
+        }
+      } catch (error) {
+        console.log(error)
       }
     }
 
@@ -120,7 +125,7 @@ export default {
   }
 }
 .btn-wrap {
-  padding: 0px 20px;
+  padding: 0px 36px;
 }
 </style>
 <style lang="less">

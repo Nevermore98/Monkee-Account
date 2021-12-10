@@ -83,7 +83,11 @@ export default {
     const getDetail = async () => {
       const { data } = await axios.get(`/bill/detail?id=${id}`)
       console.log(data)
-      Object.assign(detail, data)
+      try {
+        Object.assign(detail, data)
+      } catch (error) {
+        console.log(error)
+      }
     }
 
     // 删除账单详情

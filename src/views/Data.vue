@@ -192,7 +192,7 @@ export default {
 
     // 获取类型对应图标名
     const getHref = (item: DayBillItem) => {
-      let iconName = typeMap[item.type_id].icon
+      let iconName = typeMap[item.type_id]?.icon
       return `#icon-${iconName}`
     }
 
