@@ -42,6 +42,8 @@
           :row-height="60"
           :max-date="maxDate"
           :min-date="minDate"
+          ref="calendarRef"
+          @close="reset"
         />
       </van-config-provider>
       <!-- 金额显示框 -->
@@ -123,9 +125,17 @@
 </template>
 
 <script lang="ts">
-import { onMounted, ref, computed, watch, PropType } from 'vue'
+import { onMounted, ref, computed, watch, PropType, reactive } from 'vue'
 import dayjs from 'dayjs'
 import { Button, Icon, Toast } from 'vant'
+import type {
+  CalendarType,
+  CalendarProps,
+  CalendarDayItem,
+  CalendarDayType,
+  CalendarInstance
+} from 'vant'
+
 import axios from 'axios'
 import { typeMap } from '@/utils/index'
 import { BillType, BillTypeList, DayBillItem } from '@/api/bill'
@@ -143,19 +153,22 @@ export default {
     const payType = ref('expense')
     const selectedDate = ref(new Date())
     const billAmount = ref('')
-    const selectedType = ref<BillType>(null)
+    const selectedType = reactive<BillType>({
+      id: 0,
+      name: ''
+    })
     const expenseList = ref<BillTypeList>([])
     const incomeList = ref<BillTypeList>([])
     const remark = ref('')
     const numberPadButtonColor = ref('#39be77')
-
+    const calendarRef = ref<CalendarInstance>(null)
     watch(
       () => props.initData,
       () => {
         if (id) {
           billAmount.value = props.initData.amount || ''
-          selectedType.value!.id = props.initData.type_id || 0
-          selectedType.value!.name = props.initData.type_name || ''
+          selectedType.id = props.initData.type_id || 0
+          selectedType.name = props.initData.type_name || ''
           selectedDate.value = dayjs(Number(props.initData.date)).$d
           remark.value = props.initData.remark || ''
           payType.value = props.initData.pay_type === 1 ? 'expense' : 'income'
@@ -171,6 +184,8 @@ export default {
       } = await axios.get('/type/list')
       expenseList.value = list.filter((i) => i.type == 1)
       incomeList.value = list.filter((i) => i.type == 2)
+      // 日历重置选中日期 无法实现！
+      calendarRef.value?.reset()
     })
     // 切换收支类型
     const changeType = (type: string) => {
@@ -180,7 +195,7 @@ export default {
     }
     // 选择收支类型具体图标
     const chooseTypeIcon = (item: BillType) => {
-      selectedType.value = item
+      Object.assign(selectedType, item)
     }
     const getHref = (item: BillType) => {
       let iconName = typeMap[item.id].icon
@@ -234,6 +249,12 @@ export default {
     const chooseDate = (value: Date) => {
       isShowAddDate.value = false
       selectedDate.value = value
+    }
+
+    const reset = () => {
+      // 日历重置选中日期 无法实现！
+      console.log('fuck')
+      calendarRef.value?.reset()
     }
     // 处理数字键盘输入（暂时还不会抽离成 hook T_T）
     const handleInput = (inputValue: '.' | number) => {
@@ -299,16 +320,15 @@ export default {
         Toast.fail('金额不能为零')
         return
       }
-      if (!selectedType.value) {
-        console.log('fuck')
+      if (!selectedType.name) {
         Toast.fail('请选择类型')
         return
       }
 
       const params: DayBillItem = {
         amount: Number(billAmount.value).toFixed(2), // 金额
-        type_id: selectedType.value.id, // 当前消费类型 id
-        type_name: selectedType.value.name, // 当前消费类型 name
+        type_id: selectedType.id, // 当前消费类型 id
+        type_name: selectedType.name, // 当前消费类型 name
         date: (dayjs(selectedDate.value).unix() * 1000).toString(), // 日期
         pay_type: payType.value == 'expense' ? 1 : 2, // 支出或收入
         remark: remark.value || ''
@@ -341,7 +361,8 @@ export default {
     // 清空添加账单弹出层数据
     const clearPopAdd = () => {
       billAmount.value = ''
-      selectedType.value = null
+      selectedType.id = 0
+      selectedType.name = ''
       payType.value = 'expense'
       isShowAdd.value = false
       selectedDate.value = new Date()
@@ -383,7 +404,8 @@ export default {
       addBill,
       remark,
       clearPopAdd,
-      clearPopAddInHome
+      clearPopAddInHome,
+      reset
     }
   }
 }
