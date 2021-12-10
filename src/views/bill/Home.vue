@@ -117,6 +117,10 @@ export default {
           refreshing.value = false
         }
         loading.value = false
+        // 通过 id 倒序 data.list 的每项的 bills数组，尝试使用 reverse() 无效
+        data.list.forEach((item) => {
+          item.bills.sort((a, b) => b.id - a.id)
+        })
         billList.value = billList.value.concat(data.list)
         monthTotalExpense.value = data.totalExpense.toFixed(2)
         monthTotalIncome.value = data.totalIncome.toFixed(2)
