@@ -13,7 +13,7 @@ const router = createRouter({
         import(/* webpackChunkName: "home-chunk" */ '@/views/bill/Home.vue')
     },
     {
-      path: '/data',
+      path: '/statistic',
       component: () =>
         import(
           /* webpackChunkName: "statistic-chunk" */ '@/views/Statistic.vue'

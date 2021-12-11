@@ -8,14 +8,14 @@
         </svg>
       </template>
     </van-tabbar-item>
-    <van-tabbar-item name="/data" icon="bar-chart-o" @click="link('/data')"
+    <van-tabbar-item name="/statistic" @click="link('/statistic')"
       >统计
       <template #icon>
         <svg class="icon">
           <use xlink:href="#icon-statistic" />
         </svg> </template
     ></van-tabbar-item>
-    <van-tabbar-item name="/user" icon="user-o" @click="link('/user')"
+    <van-tabbar-item name="/user" @click="link('/user')"
       >我的
       <template #icon>
         <svg class="icon">

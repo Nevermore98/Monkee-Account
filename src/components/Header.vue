@@ -39,12 +39,11 @@ export default {
 </style>
 <style lang="less">
 @import url('@/config/custom.less');
-.header {
-  .van-nav-bar .van-icon {
-    color: @color-text-base;
-  }
-  .van-nav-bar__arrow {
-    font-size: 20px;
-  }
+// 全局修改样式，不加 .header
+.van-nav-bar .van-icon {
+  color: @color-text-base;
+}
+.van-nav-bar__arrow {
+  font-size: 20px;
 }
 </style>

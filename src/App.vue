@@ -1,5 +1,13 @@
 <template>
-  <router-view />
+  <router-view v-slot="{ Component }">
+    <keep-alive :max="6">
+      <component
+        :is="Component"
+        :key="$route.fullPath"
+        v-if="isKeepAlive"
+      ></component>
+    </keep-alive>
+  </router-view>
   <NavBar v-if="isShowNavBar" />
 </template>
 
@@ -13,33 +21,35 @@ export default {
     NavBar
   },
   setup() {
-    // const state = reactive({
-    //   menu: ['/home', '/data', '/user'],
-    //   isShowNavBar: false,
-    // })
-    // const router = useRouter();
-    //   router.afterEach(() => {
-    //     // menu 内的路径都是需要展示底部导航栏的
-    //     state.show = state.menu.includes(router.currentRoute.value.path);
-    //   });
-    // 优化为以下：
-
     const isShowNavBar = ref(true)
+    const isKeepAlive = ref(true)
     const noShowTabbarRouteList = [
       '/login',
       '/detail',
       '/about',
       '/modifyPassword'
     ]
+    const keepAliveRouteList = [
+      '/home',
+      '/statistic',
+      '/user',
+      '/detail',
+      '/modifyPassword',
+      '/about'
+    ]
     const router = useRouter()
     router.afterEach(() => {
       isShowNavBar.value = !noShowTabbarRouteList.includes(
         router.currentRoute.value.path
       )
+      isKeepAlive.value = keepAliveRouteList.includes(
+        router.currentRoute.value.path
+      )
     })
 
     return {
-      isShowNavBar
+      isShowNavBar,
+      isKeepAlive
     }
   }
 }
