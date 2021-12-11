@@ -3,19 +3,29 @@
     <!-- 账单顶部筛选总览区域 -->
     <!-- TODO 使用 keep alive 缓存组件，使得 selectedDate 缓存-->
     <div class="header">
-      <div class="type-wrap" @click="popTypeRef.isShowType = true">
+      <van-button
+        class="type-wrap"
+        size="small"
+        @click="popTypeRef.isShowType = true"
+      >
         <span class="all-type">{{ selectedType.name || '全部类型' }}</span>
         <svg class="icon">
           <use xlink:href="#icon-type" />
         </svg>
-      </div>
+      </van-button>
       <div class="data-wrap">
-        <span class="time" @click="popDateRef.isShowDate = true">
-          <span>{{ selectedDate }}</span>
-          <svg class="icon icon-sort-down">
-            <use xlink:href="#icon-sort-down" />
-          </svg>
-        </span>
+        <van-button
+          class="time"
+          size="mini"
+          @click="popDateRef.isShowDate = true"
+        >
+          <span class="time" @click="popDateRef.isShowDate = true">
+            <span>{{ selectedDate }}</span>
+            <svg class="icon icon-sort-down">
+              <use xlink:href="#icon-sort-down" />
+            </svg>
+          </span>
+        </van-button>
         <span class="expense">总支出 ￥{{ monthTotalExpense }}</span>
         <span class="income">总收入 ￥{{ monthTotalIncome }}</span>
       </div>
@@ -38,12 +48,17 @@
       </van-pull-refresh>
     </div>
     <!-- 添加账单按钮 -->
-    <div class="add-wrap" @click="popAddRef.isShowAdd = true">
+    <van-button
+      type="primary"
+      round
+      class="add-wrap"
+      @click="popAddRef.isShowAdd = true"
+    >
       <svg class="icon add-icon">
         <use xlink:href="#icon-add-bill" />
       </svg>
       记一笔
-    </div>
+    </van-button>
 
     <PopType ref="popTypeRef" @select-type="handleSelectType" />
     <PopDate ref="popDateRef" @select-date="handleSelectDate" />
@@ -187,7 +202,7 @@ export default {
   height: 100%;
   display: flex;
   flex-direction: column;
-  padding-top: 80px;
+  padding-top: 90px;
   .header {
     position: fixed;
     top: 0;
@@ -196,7 +211,7 @@ export default {
     flex-direction: column;
     justify-content: center;
     width: 100%;
-    height: 80px;
+    height: 90px;
     background-color: @primary;
     color: #fff;
     font-size: 14px;
@@ -204,34 +219,45 @@ export default {
     z-index: 100;
     .type-wrap {
       background-color: lighten(@primary, 4%);
-      display: inline-block;
+      display: flex;
+      justify-content: center;
+      align-content: center;
       padding: 6px;
+      border: none;
       border-radius: 4px;
       position: relative;
       align-self: baseline;
+      color: #fff;
+      font-size: 14px;
       .all-type {
-        margin-right: 22px;
+        margin-right: 12px;
       }
       .all-type::after {
         content: '';
         position: absolute;
-        top: 12px;
-        bottom: 11px;
-        right: 32px;
+        top: 11px;
+        bottom: 12px;
+        right: 26px;
         width: 1px;
-        background-color: #e9e9e9;
+        background-color: #fff;
       }
     }
     .data-wrap {
       display: flex;
-      margin-top: 10px;
-      font-size: 13px;
+      align-items: center;
+      margin-top: 8px;
+      font-size: 14px;
       .time {
-        display: flex;
-        margin-right: 12px;
+        margin-right: 4px;
         line-height: 18px;
+        font-size: 14px;
+        color: #fff;
+        background-color: @primary;
+        border: none;
+        border-radius: 4px;
         .icon-sort-down {
           margin-left: 2px;
+          vertical-align: 0em;
         }
       }
       .expense {
@@ -244,27 +270,32 @@ export default {
     overflow: hidden;
     overflow-y: scroll;
     background-color: #f5f5f5;
-    padding: 10px;
+    padding: 8px;
   }
   .add-wrap {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     position: fixed;
     right: 20px;
     bottom: 100px;
     padding: 4px 12px;
     height: 42px;
-    border-radius: 999px;
-    border: 1px solid #e9e9e9;
     font-size: 14px;
-    background-color: #fff;
+    border: none;
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
+    background-color: #fff;
     color: @primary;
     .add-icon {
-      font-size: 18px;
+      font-size: 24px;
       margin-right: 4px;
     }
+  }
+}
+</style>
+<style lang="less">
+.home .add-wrap {
+  .van-button__text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 }
 </style>

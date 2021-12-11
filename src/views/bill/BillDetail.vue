@@ -1,7 +1,6 @@
 <template>
   <Header title="账单详情" />
-  <!-- <div class="detail" v-if="Object.keys(detail).length"></div> -->
-  <div class="detail">
+  <div class="detail" v-if="Object.keys(detail).length">
     <div class="card">
       <!-- 收支类型图标和名称 -->
       <div class="type-wrap">
@@ -26,19 +25,25 @@
       <div class="info">
         <van-field
           label="记录时间"
-          :model-value="dayjs(Number(detail.date)).format('YYYY-MM-DD HH:mm')"
+          :model-value="dayjs(Number(detail.date)).format('YYYY月MM日DD HH:mm')"
           readonly
         />
         <van-field label="备注" :model-value="detail.remark || '-'" readonly />
       </div>
       <!-- 删除和编辑按钮 -->
       <div class="operation van-hairline--top">
-        <span class="van-hairline--right" @click="deleteDetail"
-          ><van-icon name="delete" />删除</span
-        >
-        <span @click="popAddRef.isShowAdd = true"
-          ><van-icon name="edit" />编辑</span
-        >
+        <van-button @click="deleteDetail" class="delete-button">
+          <svg class="icon operation-icon">
+            <use xlink:href="#icon-delete" />
+          </svg>
+          删除
+        </van-button>
+        <van-button @click="popAddRef.isShowAdd = true" class="edit-button">
+          <svg class="icon operation-icon">
+            <use xlink:href="#icon-edit" />
+          </svg>
+          编辑
+        </van-button>
       </div>
       <PopAdd
         v-if="detail.id"
@@ -48,9 +53,10 @@
       />
     </div>
   </div>
-  <!-- <div v-else>
-    <van-empty image="network" description="暂无该账单数据" />
-  </div> -->
+  <div v-else>
+    <!-- <van-empty image="network" description="加载中" /> -->
+    <van-skeleton title :row="3" />
+  </div>
 </template>
 <script lang="ts">
 import { onMounted, reactive, ref, toRefs } from 'vue'
@@ -135,7 +141,7 @@ export default {
 .card {
   border-radius: 12px;
   background-color: #fff;
-  padding: 0 12px;
+  // padding: 0 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -174,67 +180,59 @@ export default {
   }
   .info {
     width: 100%;
+    padding: 0 12px;
     font-size: 14px;
     text-align: left;
-    // .time {
-    //   display: flex;
-    //   align-items: center;
-    //   justify-content: flex-start;
-    //   margin-bottom: 12px;
-    //   span:nth-of-type(1) {
-    //     flex: 3;
-    //     color: @color-text-caption;
-    //   }
-    //   span:nth-of-type(2) {
-    //     flex: 9;
-    //   }
-    // }
-    // .remark {
-    //   display: flex;
-    //   align-items: center;
-    //   justify-content: flex-start;
-    //   margin-bottom: 12px;
-    //   span:nth-of-type(1) {
-    //     flex: 3;
-    //     color: @color-text-caption;
-    //   }
-    //   span:nth-of-type(2) {
-    //     flex: 9;
-    //     color: @color-text-base;
-    //   }
-    // }
+    .van-cell {
+      padding: 10px;
+    }
   }
   .operation {
     width: 100%;
-    height: 50px;
     display: flex;
     align-items: center;
+    justify-content: center;
     font-size: 16px;
-    .van-icon {
+    .operation-icon {
       margin-right: 4px;
     }
-    span {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-      flex: 1;
-    }
-    span:nth-of-type(1) {
+
+    .delete-button {
+      height: 50px;
+      width: 50%;
       color: red;
+      border: none;
+      border-radius: 0 0 0 12px;
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 11px;
+        bottom: 12px;
+        right: 0;
+        width: 1px;
+        transform: scale(0.5);
+        background-color: #ebedf0;
+      }
+    }
+    .edit-button {
+      height: 50px;
+      width: 50%;
+      border: none;
+      border-radius: 0;
+      border-radius: 0 0 12px 0;
     }
   }
 }
 </style>
 <style lang="less">
-.van-cell::after {
-  display: none;
-}
-.van-cell {
-  padding: 6px;
-}
-.van-field__label {
-  width: 58px;
-  margin-right: 14px;
+.detail {
+  .van-cell::after {
+    display: none;
+  }
+  .van-field__label {
+    width: 58px;
+    margin-right: 14px;
+  }
 }
 </style>

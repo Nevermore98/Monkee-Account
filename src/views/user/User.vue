@@ -13,27 +13,48 @@
     </div>
     <!-- 单元格 -->
     <div class="content">
-      <van-cell
-        icon="edit"
-        @click="isShowSignature = true"
-        title="修改个性签名"
-        is-link
-        size="large"
-      />
-      <van-cell
-        icon="setting-o"
-        title="修改密码"
-        to="/modifyPassword"
-        is-link
-        size="large"
-      />
-      <van-cell
-        icon="smile-o"
-        to="/about"
-        title="关于项目"
-        is-link
-        size="large"
-      />
+      <van-cell-group>
+        <van-cell
+          icon="edit"
+          @click="isShowSignature = true"
+          title="修改个性签名"
+          is-link
+          size="large"
+        >
+          <template #icon>
+            <div class="icon-wrap">
+              <svg class="icon">
+                <use xlink:href="#icon-edit" />
+              </svg>
+            </div> </template
+        ></van-cell>
+        <van-cell
+          icon="setting-o"
+          title="修改密码"
+          to="/modifyPassword"
+          is-link
+          size="large"
+          ><template #icon>
+            <div class="icon-wrap">
+              <svg class="icon">
+                <use xlink:href="#icon-modify-password" />
+              </svg>
+            </div> </template
+        ></van-cell>
+        <van-cell
+          icon="smile-o"
+          to="/about"
+          title="关于项目"
+          is-link
+          size="large"
+          ><template #icon>
+            <div class="icon-wrap">
+              <svg class="icon">
+                <use xlink:href="#icon-about" />
+              </svg>
+            </div> </template
+        ></van-cell>
+      </van-cell-group>
     </div>
     <van-dialog
       v-model:show="isShowSignature"
@@ -153,19 +174,16 @@ export default {
   }
   .content {
     margin-top: 20px;
+    .icon-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-right: 4px;
+      font-size: 16px;
+    }
   }
   .btn-wrap {
     margin-top: 20px;
   }
-}
-</style>
-<style lang="less">
-@import url('@/config/custom.less');
-
-.van-dialog__confirm {
-  color: @primary;
-}
-.van-dialog__confirm:active {
-  color: @primary;
 }
 </style>

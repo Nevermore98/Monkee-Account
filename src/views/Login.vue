@@ -1,89 +1,67 @@
 <template>
-  <Header :title="type === 'login' ? '登录' : '注册'" />
   <div class="auth">
-    <img class="logo" src="@/assets/monkey.png" alt="" />
+    <div class="title">萌奇记账</div>
+    <img class="logo" src="@/assets/monkey.png" alt="logo" />
 
-    <!-- 登录 -->
-    <van-form class="form-wrap" @submit="onSubmit" v-if="type === 'login'">
-      <div class="form">
-        <van-field
-          clearable
-          v-model="username"
-          name="username"
-          label="账号"
-          placeholder="请输入账号"
-          :rules="[{ required: true, message: '请输入正确的账号' }]"
-          autocomplete="on"
-        />
-        <van-field
-          clearable
-          v-model="password"
-          type="password"
-          name="password"
-          label="密码"
-          placeholder="请输入密码"
-          :rules="[
-            {
-              required: true,
-              message: '请输入6-20位密码，区分大小写'
-            }
-          ]"
-          autocomplete="on"
-        />
+    <van-form @submit="onSubmit">
+      <div class="form-wrap">
+        <van-cell-group inset>
+          <van-field
+            clearable
+            v-model="username"
+            name="username"
+            label="账号"
+            placeholder="请输入账号"
+            :rules="[{ required: true, message: '请填写账号' }]"
+            autocomplete="on"
+          />
+          <van-field
+            clearable
+            v-model="password"
+            type="password"
+            name="password"
+            label="密码"
+            placeholder="请输入密码"
+            :rules="[
+              { required: true, message: '请输入6-20位密码，区分大小写' }
+            ]"
+            autocomplete="on"
+          />
+          <van-field
+            v-if="type === 'register'"
+            center
+            clearable
+            label="验证码"
+            placeholder="请输入验证码"
+            v-model="verifyInput"
+            autocomplete="on"
+          >
+            <template #button>
+              <VueImgVerify ref="verifyRef" />
+            </template>
+          </van-field>
+        </van-cell-group>
       </div>
-
       <div class="button-wrap">
-        <van-button round block type="primary" native-type="submit">
-          登录
+        <van-button
+          round
+          block
+          type="primary"
+          native-type="submit"
+          class="submit-btn"
+        >
+          {{ type === 'register' ? '注册' : '登录' }}
         </van-button>
-        <p @click="changeType('register')" class="change-btn">
+        <p
+          v-if="type === 'register'"
+          @click="changeType('login')"
+          class="change-btn"
+        >
+          登录已有账号
+        </p>
+        <p v-else @click="changeType('register')" class="change-btn">
           没有账号，前往注册
         </p>
-      </div>
-    </van-form>
-
-    <!-- 注册 -->
-    <van-form class="form-wrap" @submit="onSubmit" v-if="type === 'register'">
-      <div class="form">
-        <van-field
-          clearable
-          v-model="username"
-          name="username"
-          label="账号"
-          placeholder="请输入账号"
-          :rules="[{ required: true, message: '请填写账号' }]"
-          autocomplete="on"
-        />
-        <van-field
-          clearable
-          v-model="password"
-          type="password"
-          name="password"
-          label="密码"
-          placeholder="请输入密码"
-          :rules="[{ required: true, message: '请输入6-20位密码，区分大小写' }]"
-          autocomplete="on"
-        />
-
-        <van-field
-          center
-          clearable
-          label="验证码"
-          placeholder="输入验证码"
-          v-model="verifyInput"
-          autocomplete="on"
-        >
-          <template #button>
-            <VueImgVerify ref="verifyRef" />
-          </template>
-        </van-field>
-      </div>
-
-      <div class="button-wrap">
-        <van-button round block type="primary" native-type="submit">
-          注册
-        </van-button>
-        <p @click="changeType('login')" class="change-btn">登录已有账号</p>
       </div>
     </van-form>
   </div>
@@ -161,9 +139,16 @@ export default {
 <style lang="less" scoped>
 @import url('@/config/custom.less');
 .auth {
-  height: calc(~'(100% - 46px)');
-  padding: 30px 20px 0 20px;
+  // height: calc(~'(100% - 46px)');
+  height: 100%;
   background: @primary-bg;
+  .title {
+    display: flex;
+    justify-content: center;
+    padding: 30px 10px;
+    font-size: 36px;
+    font-weight: bold;
+  }
   .logo {
     width: 150px;
     display: block;
@@ -171,19 +156,14 @@ export default {
     margin-bottom: 30px;
   }
   .form-wrap {
-    .form {
-      border-radius: 10px;
-      overflow: hidden;
-      // .van-cell:first-child {
-      //   padding-top: 20px;
-      // }
-      // .van-cell:last-child {
-      //   padding-bottom: 20px;
-      // } 
-    }
+    min-height: 180px;
   }
   .button-wrap {
-    margin-top: 16px;
+    margin-top: 10px;
+    .submit-btn {
+      background-color: @primary;
+      border: @primary;
+    }
     .change-btn {
       text-align: center;
       margin: 10px 0;
@@ -191,5 +171,19 @@ export default {
       font-size: 14px;
     }
   }
+}
+</style>
+<style lang="less">
+.van-field__label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 60px !important;
+}
+.van-form {
+  padding: 0 30px;
+}
+.van-cell-group--inset {
+  margin: 0 !important;
 }
 </style>

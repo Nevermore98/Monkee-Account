@@ -26,12 +26,12 @@
             >收入</span
           >
         </div>
-        <div class="date" @click="isShowAddDate = true">
+        <van-button class="date" @click="isShowAddDate = true">
           <span>{{ formattedDate }}</span>
           <svg class="icon icon-sort-down">
             <use xlink:href="#icon-sort-down" />
           </svg>
-        </div>
+        </van-button>
       </div>
       <!-- 日历选择弹出层 -->
       <van-config-provider :theme-vars="calendarThemeVars">
@@ -54,13 +54,13 @@
       <!-- 收支类型图标 -->
       <div class="type-wrap">
         <div class="type-body" v-if="payType == 'expense'">
-          <div
+          <van-button
             class="type-item"
             v-for="item in expenseList"
             :key="item.id"
             @click="chooseTypeIcon(item)"
           >
-            <span
+            <div
               :class="{
                 'icon-wrap': true,
                 expense: true,
@@ -70,12 +70,12 @@
               <svg class="type-icon icon">
                 <use v-bind:xlink:href="getHref(item)" />
               </svg>
-            </span>
-            <span>{{ item.name }}</span>
-          </div>
+            </div>
+            <div>{{ item.name }}</div>
+          </van-button>
         </div>
         <div class="type-body income-type-body" v-else>
-          <div
+          <van-button
             class="type-item"
             v-for="item in incomeList"
             :key="item.id"
@@ -93,7 +93,7 @@
               </svg>
             </span>
             <span>{{ item.name }}</span>
-          </div>
+          </van-button>
         </div>
       </div>
       <!-- 备注输入框 -->
@@ -203,13 +203,11 @@ export default {
     }
 
     const changeConfirmButtonColor = () => {
-      const button = document.querySelector('.van-key--blue')
+      const button: HTMLElement = document.querySelector('.van-key--blue')
       if (payType.value === 'expense') {
-        button.classList.add('expense-background')
-        button.classList.remove('income-background')
+        button.style.background = '#39be77'
       } else {
-        button.classList.add('income-background')
-        button.classList.remove('expense-background')
+        button.style.background = '#ecbe25'
       }
     }
 
@@ -284,7 +282,10 @@ export default {
           billAmount.value.length >= 6 &&
           billAmount.value.indexOf('.') === -1
         ) {
-          Toast.fail('金额不能大于1,000,000')
+          Toast({
+            message: '金额不能大于1,000,000',
+            position: 'bottom'
+          })
           return billAmount.value
         }
         // 保留小数点后两位
@@ -292,7 +293,10 @@ export default {
           billAmount.value.includes('.') &&
           billAmount.value.split('.')[1].length >= 2
         ) {
-          Toast.fail('仅保留小数点后两位')
+          Toast({
+            message: '仅保留小数点后两位',
+            position: 'bottom'
+          })
           return billAmount.value
         }
         return (billAmount.value += inputValue)
@@ -313,15 +317,24 @@ export default {
 
     const addBill = async () => {
       if (!billAmount.value) {
-        Toast.fail('请输入金额')
+        Toast({
+          message: '请输入具体金额',
+          position: 'bottom'
+        })
         return
       }
       if (Number(billAmount.value).toFixed() === '0') {
-        Toast.fail('金额不能为零')
+        Toast({
+          message: '输入金额不能为零',
+          position: 'bottom'
+        })
         return
       }
       if (!selectedType.name) {
-        Toast.fail('请选择类型')
+        Toast({
+          message: '请选择收支类型',
+          position: 'bottom'
+        })
         return
       }
 
@@ -415,7 +428,7 @@ export default {
 .add-wrap {
   padding-top: 12px;
   .header {
-    padding: 6px 20px;
+    padding: 0 20px;
 
     .close-wrap {
       display: flex;
@@ -434,7 +447,7 @@ export default {
     }
   }
   .filter-wrap {
-    padding: 12px 24px;
+    padding: 10px 24px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -443,22 +456,21 @@ export default {
         display: inline-block;
         background: #f5f5f5;
         color: @color-text-caption;
-        padding: 4px 10px;
-        font-size: 12px;
-        border-radius: 8px;
-        // border: 1px solid #f5f5f5;
+        padding: 6px 12px;
+        font-size: 14px;
+        border-radius: 4px;
       }
       .expense {
-        margin-right: 6px;
+        margin-right: 8px;
         &.active {
-          background-color: #eafbf6;
+          background-color: #dbf7ee;
           border-color: @primary;
           color: @primary;
         }
       }
       .income {
         &.active {
-          background-color: #fbf8f0;
+          background-color: #fff4d5;
           border-color: @text-warning;
           color: @text-warning;
         }
@@ -466,20 +478,25 @@ export default {
     }
     .date {
       display: flex;
-      justify-content: center;
-      padding: 4px 6px;
+      align-items: center;
+      height: 32px;
+      padding: 8px 6px 8px 8px;
       background-color: #f0f0f0;
-      border-radius: 20px;
+      border: none;
+      border-radius: 4px;
       color: @color-text-base;
+      font-size: 14px;
       .icon-sort-down {
-        margin-left: 2px;
+        use {
+          transform: translateY(-20%);
+        }
       }
     }
   }
   .numberPad {
     padding-bottom: 12px;
     border-bottom: 1px solid #e9e9e9;
-    padding: 10px 20px;
+    padding: 0 20px;
     .prefix {
       font-size: 40px;
       font-weight: bold;
@@ -509,17 +526,17 @@ export default {
     }
   }
   .type-wrap {
-    padding: 4px 2px;
     .type-body {
       display: flex;
       flex-wrap: wrap;
+      padding: 10px 6px 0 6px;
+      height: 140px;
       .type-item {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
         width: calc(100% / 6);
-        padding: 16px 10px 0 10px;
+        height: 50%;
+        padding: 10px 0;
+        border: none;
+        border-radius: 4px;
         .icon-wrap {
           display: flex;
           justify-content: center;
@@ -528,7 +545,7 @@ export default {
           border-radius: 50%;
           width: 30px;
           height: 30px;
-          margin-bottom: 5px;
+          margin-bottom: 4px;
           .type-icon {
             color: @color-text-caption;
             font-size: 22px;
@@ -552,12 +569,12 @@ export default {
         }
       }
     }
-    .income-type-body {
-      margin-bottom: 68px;
-    }
   }
   .remark {
-    padding: 0 4px;
+    .van-cell {
+      padding: 0;
+    }
+    padding: 14px 20px;
   }
   .van-number-keyboard {
     position: unset;
@@ -566,31 +583,33 @@ export default {
 </style>
 <style lang="less">
 @import url('@/config/custom.less');
-.van-field__label {
-  width: 32px;
-}
-.van-field__body {
-  position: relative;
-}
-.van-field__clear {
-  position: absolute;
-  right: 16%;
-}
-.van-field__word-limit {
-  position: absolute;
-  top: 0;
-  right: 0;
-}
-// @bgc: `payType.value === 'expense' ? '#39be77': '#ecbe25' `;
-
-// 初始化确认键颜色
-.van-key--blue {
-  background: @primary;
-}
-.expense-background {
-  background: @primary!important;
-}
-.income-background {
-  background: @text-warning!important;
+.add-wrap {
+  .van-field__label {
+    width: 30px;
+  }
+  .van-field__body {
+    position: relative;
+  }
+  .van-field__clear {
+    position: absolute;
+    right: 16%;
+  }
+  .van-field__word-limit {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+  // 初始化确认键颜色
+  .van-key--blue {
+    background: @primary;
+  }
+  .type-item {
+    .van-button__text {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+  }
 }
 </style>

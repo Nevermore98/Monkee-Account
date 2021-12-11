@@ -3,14 +3,14 @@
     <div class="item-header">
       <div>{{ createAtDate }} {{ createAtDay }}</div>
       <div class="today-total">
-        <span>
-          <b>支</b>
+        <div>
+          <div>支</div>
           {{ dayTotalExpense.toFixed(2) }}
-        </span>
-        <span>
-          <b>收</b>
+        </div>
+        <div>
+          <div>收</div>
           {{ dayTotalIncome.toFixed(2) }}
-        </span>
+        </div>
       </div>
     </div>
     <van-cell
@@ -45,7 +45,6 @@ import { useRouter } from 'vue-router'
 import type { DayBillItem, DayBillItems, DayBillList } from '@/api/bill'
 import dayjs from 'dayjs'
 import { typeMap } from '@/utils/index'
-import { BillType } from '@/api/bill'
 
 export default {
   name: 'CardItem',
@@ -91,12 +90,14 @@ export default {
     })
 
     const goToDetail = (item: DayBillItem) => {
-      router.push({
-        path: '/detail',
-        query: {
-          id: item.id
-        }
-      })
+      setTimeout(() => {
+        router.push({
+          path: '/detail',
+          query: {
+            id: item.id
+          }
+        })
+      }, 300)
     }
     const getHref = (item: DayBillItem) => {
       // 偶现 typeMap[item.type_id] 为 undefined 的 bug，使用 ?. 确保无报错
@@ -128,7 +129,7 @@ export default {
     height: 60px;
     display: flex;
     background-color: #f9f9f9;
-    font-size: 12px;
+    font-size: 14px;
     align-items: center;
     justify-content: space-between;
     padding: 0 10px;
@@ -136,19 +137,31 @@ export default {
       color: @color-text-base;
     }
     .today-total {
-      span {
-        margin-left: 10px;
-        b {
+      display: flex;
+      align-items: center;
+      div {
+        display: flex;
+        align-items: center;
+
+        div {
+          margin: 0 2px 0 10px;
+          height: 22px;
           color: @color-text-caption;
-          font-weight: normal;
+          font-weight: 500;
           background-color: #f5f5f5;
-          padding: 3px;
+          padding: 4px;
           border-radius: 2px;
         }
       }
     }
   }
   .bill-item {
+    // less mixin 语法
+    .button-active();
+
+    .van-cell__value {
+      font-weight: 500 !important;
+    }
     .icon-wrap {
       display: flex;
       justify-content: center;
@@ -182,12 +195,20 @@ export default {
 @import url('@/config/custom.less');
 .expense {
   .van-cell__value {
-    color: @color-text-base!important;
+    color: @color-text-base !important;
   }
 }
 .income {
   .van-cell__value {
-    color: @text-warning!important;
+    color: @text-warning !important;
+  }
+}
+.item-wrap {
+  .van-cell {
+    padding: 12px 16px !important;
+    .van-cell__value {
+      font-weight: 500 !important;
+    }
   }
 }
 </style>

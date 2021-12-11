@@ -30,7 +30,7 @@ export default {
 }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 @import url('@/config/custom.less');
 .about {
   .content {

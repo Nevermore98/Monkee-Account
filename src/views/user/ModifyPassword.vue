@@ -3,39 +3,39 @@
     <Header title="修改密码" />
     <Header title="修改密码" />
 
-    <div class="edit-wrap">
-      <van-cell-group inset>
-        <van-field
-          v-model="oldPassword"
-          type="password"
-          label="原密码"
-          placeholder="请输入原密码"
-          clearable
-          autocomplete="off"
-        />
-        <van-field
-          v-model="newPassword"
-          type="password"
-          label="新密码"
-          placeholder="请输入新密码"
-          clearable
-          autocomplete="off"
-        />
-        <van-field
-          v-model="repeatPassword"
-          type="password"
-          label="确认密码"
-          placeholder="请再次输入新密码"
-          @blur="comparePassword"
-          :error-message="errorMessage"
-          v-bind:disabled="!newPassword"
-          clearable
-          autocomplete="off"
-        />
-      </van-cell-group>
-    </div>
+    <van-form @submit="submitModify">
+      <div class="edit-wrap">
+        <van-cell-group inset>
+          <van-field
+            v-model="oldPassword"
+            type="password"
+            label="原密码"
+            placeholder="请输入原密码"
+            clearable
+            autocomplete="off"
+          />
+          <van-field
+            v-model="newPassword"
+            type="password"
+            label="新密码"
+            placeholder="请输入新密码"
+            clearable
+            autocomplete="off"
+          />
+          <van-field
+            v-model="repeatPassword"
+            type="password"
+            label="确认密码"
+            placeholder="请再次输入新密码"
+            @blur="comparePassword"
+            :error-message="errorMessage"
+            v-bind:disabled="!newPassword"
+            clearable
+            autocomplete="off"
+          />
+        </van-cell-group>
+      </div>
 
-    <div class="btn-wrap">
       <van-button
         round
         block
@@ -46,7 +46,7 @@
       >
         提交修改
       </van-button>
-    </div>
+    </van-form>
   </div>
 </template>
 
@@ -76,7 +76,7 @@ export default {
     }
     // 提交修改
     const submitModify = () => {
-      if (newPassword.value != repeatPassword.value) {
+      if (newPassword.value !== repeatPassword.value) {
         Toast.fail('新密码不一致')
         return
       }
@@ -84,6 +84,11 @@ export default {
         Toast.fail('输入不能为空')
         return
       }
+      if ((newPassword.value = oldPassword.value)) {
+        Toast.fail('新密码与旧密码相同')
+        return
+      }
+
       try {
         const { data, code } = axios.post('/user/modify_pass', {
           old_pass: oldPassword.value,
@@ -118,18 +123,24 @@ export default {
 .edit {
   height: 100%;
   background-color: #f5f5f5;
+  .van-form {
+    padding: 0 30px;
+  }
 
   .edit-wrap {
-    padding: 20px;
-    min-height: 200px;
+    min-height: 180px;
   }
-}
-.btn-wrap {
-  padding: 0px 36px;
 }
 </style>
 <style lang="less">
-.van-field__label {
-  width: 70px;
+.edit {
+  .van-field__label {
+    display: flex;
+    justify-content: center;
+    width: 70px;
+  }
+  .van-cell-group--inset {
+    margin: 0 !important;
+  }
 }
 </style>

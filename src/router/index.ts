@@ -15,7 +15,9 @@ const router = createRouter({
     {
       path: '/data',
       component: () =>
-        import(/* webpackChunkName: "data-chunk" */ '@/views/Data.vue')
+        import(
+          /* webpackChunkName: "statistic-chunk" */ '@/views/Statistic.vue'
+        )
     },
     {
       path: '/user',
@@ -26,15 +28,13 @@ const router = createRouter({
       path: '/modifyPassword',
       component: () =>
         import(
-          /* webpackChunkName: "user-chunk" */ '@/views/user/ModifyPassword.vue'
+          /* webpackChunkName: "modifyPassword-chunk" */ '@/views/user/ModifyPassword.vue'
         )
     },
     {
       path: '/about',
       component: () =>
-        import(
-          /* webpackChunkName: "user-chunk" */ '@/views/user/About.vue'
-        )
+        import(/* webpackChunkName: "about-chunk" */ '@/views/user/About.vue')
     },
     {
       path: '/login',
@@ -45,7 +45,7 @@ const router = createRouter({
       path: '/detail',
       component: () =>
         import(
-          /* webpackChunkName: "login-chunk" */ '@/views/bill/BillDetail.vue'
+          /* webpackChunkName: "billDetail-chunk" */ '@/views/bill/BillDetail.vue'
         )
     }
   ]

@@ -15,7 +15,7 @@ export default {
     const verifyCanvasRef = ref(null)
     const state = reactive({
       pool: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890', // 字符串
-      width: 120,
+      width: 100,
       height: 50,
       verifyCode: ''
     })
@@ -53,7 +53,7 @@ export default {
         const text = state.pool[randomNum(0, state.pool.length)]
         verifyCode += text
         // 随机的字体大小
-        const fontSize = randomNum(20, 42)
+        const fontSize = randomNum(20, 30)
         // 字体随机的旋转角度
         const deg = randomNum(-35, 35)
 
@@ -62,7 +62,7 @@ export default {
         ctx.fillStyle = randomColor(80, 150)
 
         ctx.save()
-        ctx.translate(30 * i + 15, 15)
+        ctx.translate(25 * i + 15, 25)
         ctx.rotate((deg * Math.PI) / 180)
         ctx.fillText(text, -15 + 5, -15)
         ctx.restore()
@@ -101,7 +101,7 @@ export default {
   }
 }
 </script>
-<style lang="less">
+<style lang="less" scoped>
 .verify-canvas {
   height: 50px;
 

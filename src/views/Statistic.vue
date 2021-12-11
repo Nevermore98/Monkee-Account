@@ -1,119 +1,124 @@
 <template>
-  <div
-    class="header"
-    :class="{
-      'expense-background': curPayType == 'expense',
-      'income-background': curPayType == 'income'
-    }"
-  >
-    <!-- 筛选日期收支类型 -->
-    <div class="filter-wrap">
-      <span class="date" @click="popDateRef.isShowDate = true">
-        {{ dayjs(selectedDate).format('YYYY年MM月') }}
-        <svg class="icon">
-          <use xlink:href="#icon-calendar" />
-        </svg>
-      </span>
-      <span class="type-tab">
-        <span
-          class="expense"
-          :class="{ active: curPayType == 'expense' }"
-          @click="changeCurPayType('expense')"
-          >支出</span
-        >
-        <span
-          class="income"
-          :class="{ active: curPayType == 'income' }"
-          @click="changeCurPayType('income')"
-          >收入</span
-        >
-      </span>
-    </div>
-    <!-- 总收支展示 -->
-    <div class="total-wrap">
-      <div class="title">
-        {{ curPayType === 'expense' ? '共支出' : '共收入' }}
-      </div>
-      <div class="total-amount">
-        ¥{{ curPayType === 'expense' ? totalExpense : totalIncome }}
-      </div>
-    </div>
-  </div>
-
-  <!-- 收支构成图表明细 -->
-  <div class="structure" v-if="curTotal > 0">
-    <div class="title">
-      {{ curPayType === 'expense' ? '支出构成' : '收入构成' }}
-    </div>
-    <!-- 账单占比饼图 -->
+  <van-skeleton title :row="10" :loading="loading">
     <div
-      id="pie-chart"
-      style="width: 100%; height: 200px"
-      v-if="curTotal > 0"
-    ></div>
-    <!-- 账单占比条形图 -->
-    <div class="proportion-bar">
-      <div
-        class="bill-item"
-        v-for="item in curPayType === 'expense' ? expenseList : incomeList"
-        :key="item.type_id"
-      >
-        <!-- 类型图标和名字 -->
-        <div class="type-item">
-          <span
-            class="icon-wrap"
-            :class="{
-              expense: curPayType == 'expense',
-              income: curPayType == 'income'
-            }"
-          >
-            <svg class="type-icon icon">
-              <use v-bind:xlink:href="getHref(item)" />
-            </svg>
-          </span>
-          <span>{{ item.type_name }}</span>
-        </div>
-
-        <span class="progress">
-          <van-progress
-            :percentage="
-              Number(
-                (item.number /
-                  Number(
-                    curPayType == 'expense' ? totalExpense : totalIncome
-                  )) *
-                  100
-              )
-            "
-            stroke-width="6px"
-            :show-pivot="false"
-            track-color="#ffffff"
-            :color="curPayType === 'expense' ? '#39be77' : '#ecbe25'"
-          />
-        </span>
-        <span class="amount">￥{{ Number(item.number).toFixed(2) || 0 }}</span>
-      </div>
-    </div>
-  </div>
-  <div class="empty" v-else>
-    <div class="icon-wrap">
-      <svg class="icon">
-        <use xlink:href="#icon-empty" />
-      </svg>
-    </div>
-    {{ `暂无${curPayType === 'expense' ? '支出' : '收入'}账单` }}
-    <div
-      class="empty-button"
+      class="header"
       :class="{
         'expense-background': curPayType == 'expense',
         'income-background': curPayType == 'income'
       }"
-      @click="$router.push('/home')"
     >
-      去记账
+      <!-- 筛选日期收支类型 -->
+      <div class="filter-wrap">
+        <van-button class="date" @click="popDateRef.isShowDate = true">
+          {{ dayjs(selectedDate).format('YYYY年MM月') }}
+          <svg class="icon">
+            <use xlink:href="#icon-calendar" />
+          </svg>
+        </van-button>
+        <span class="type-tab">
+          <span
+            class="expense"
+            :class="{ active: curPayType == 'expense' }"
+            @click="changeCurPayType('expense')"
+            >支出</span
+          >
+          <span
+            class="income"
+            :class="{ active: curPayType == 'income' }"
+            @click="changeCurPayType('income')"
+            >收入</span
+          >
+        </span>
+      </div>
+      <!-- 总收支展示 -->
+      <div class="total-wrap">
+        <div class="title">
+          {{ curPayType === 'expense' ? '共支出' : '共收入' }}
+        </div>
+        <div class="total-amount">
+          ¥{{ curPayType === 'expense' ? totalExpense : totalIncome }}
+        </div>
+      </div>
     </div>
-  </div>
-  <PopDate ref="popDateRef" @select-date="handleSelectDate" />
+
+    <!-- 收支构成图表明细 -->
+    <div class="structure" v-if="curTotal > 0">
+      <div class="title">
+        {{ curPayType === 'expense' ? '支出构成' : '收入构成' }}
+      </div>
+      <!-- 账单占比饼图 -->
+      <div
+        id="pie-chart"
+        style="width: 100%; height: 200px"
+        v-if="curTotal > 0"
+      ></div>
+      <!-- 账单占比条形图 -->
+      <div class="proportion-bar">
+        <div
+          class="bill-item"
+          v-for="item in curPayType === 'expense' ? expenseList : incomeList"
+          :key="item.type_id"
+        >
+          <!-- 类型图标和名字 -->
+          <div class="type-item">
+            <span
+              class="icon-wrap"
+              :class="{
+                expense: curPayType == 'expense',
+                income: curPayType == 'income'
+              }"
+            >
+              <svg class="type-icon icon">
+                <use v-bind:xlink:href="getHref(item)" />
+              </svg>
+            </span>
+            <span class="icon-name">{{ item.type_name }}</span>
+          </div>
+
+          <span class="progress">
+            <van-progress
+              :percentage="
+                Number(
+                  (item.number /
+                    Number(
+                      curPayType == 'expense' ? totalExpense : totalIncome
+                    )) *
+                    100
+                )
+              "
+              stroke-width="6px"
+              :show-pivot="false"
+              track-color="#ffffff"
+              :color="curPayType === 'expense' ? '#39be77' : '#ecbe25'"
+            />
+          </span>
+          <span class="amount"
+            >￥{{ Number(item.number).toFixed(2) || 0 }}</span
+          >
+        </div>
+      </div>
+    </div>
+    <div class="empty" v-else>
+      <div class="icon-wrap">
+        <svg class="icon">
+          <use xlink:href="#icon-empty" />
+        </svg>
+      </div>
+      {{ `暂无${curPayType === 'expense' ? '支出' : '收入'}账单` }}
+      <van-button
+        size="small"
+        class="empty-button"
+        :class="{
+          'expense-background': curPayType == 'expense',
+          'income-background': curPayType == 'income'
+        }"
+        @click="$router.push('/home')"
+      >
+        去记账
+      </van-button>
+    </div>
+    <PopDate ref="popDateRef" @select-date="handleSelectDate" />
+  </van-skeleton>
 </template>
 
 <script lang="ts">
@@ -147,6 +152,7 @@ export default {
         ? monthBillData.totalExpense
         : monthBillData.totalIncome
     })
+    const loading = ref(true)
 
     onMounted(() => {
       getMouthBillData()
@@ -175,7 +181,8 @@ export default {
         // DOM 还没挂载完成，延迟一会再初始化图表
         setTimeout(() => {
           setPieChart()
-        }, 0)
+        }, 50)
+        loading.value = false
       }
     }
 
@@ -187,7 +194,7 @@ export default {
     const changeCurPayType = (type: 'expense' | 'income') => {
       curPayType.value = type
       // DOM 还没挂载完成，延迟一会再初始化图表
-      setTimeout(() => setPieChart(), 0)
+      setTimeout(() => setPieChart(), 50)
     }
 
     // 获取类型对应图标名
@@ -261,7 +268,8 @@ export default {
       handleSelectDate,
       changeCurPayType,
       getHref,
-      curTotal
+      curTotal,
+      loading
     }
   }
 }
@@ -271,22 +279,29 @@ export default {
 
 .header {
   color: #fff;
-  padding: 40px 20px;
 
   .filter-wrap {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 40px 30px 20px 20px;
     font-size: 14px;
     .date {
+      height: 32px;
+      padding: 6px 10px;
+      background: transparent;
+      border: none;
+      border-radius: 4px;
       font-weight: 500;
+      font-size: 16px;
+      color: #fff;
     }
     .type-tab {
       span {
         display: inline-block;
-        padding: 4px 10px;
-        font-size: 12px;
-        border-radius: 2px;
+        padding: 6px 12px;
+        font-size: 14px;
+        border-radius: 4px;
         opacity: 0.5;
       }
       .expense {
@@ -311,28 +326,29 @@ export default {
   .total-wrap {
     display: flex;
     flex-direction: column;
-    margin-top: 20px;
+    padding: 20px 30px;
 
     .title {
-      // color: @color-text-light;
       opacity: 0.5;
+      font-size: 14px;
     }
     .total-amount {
-      margin-top: 10px;
-      font-size: 24px;
-      font-weight: 600;
+      padding: 20px 0;
+      font-size: 32px;
+      font-weight: 500;
     }
   }
 }
 .structure {
   background-color: #fff;
+  font-size: 14px;
 
   .title {
-    padding: 20px;
+    padding: 30px;
     font-size: 16px;
   }
   .proportion-bar {
-    padding: 0 20px 100px 20px;
+    padding: 0 30px 100px 30px;
     .bill-item {
       display: flex;
       justify-content: space-between;
@@ -347,13 +363,16 @@ export default {
           align-items: center;
           background-color: #f5f5f5;
           border-radius: 50%;
-          height: 22px;
-          width: 22px;
-          margin-right: 6px;
-          .icon {
-            font-size: 14px;
+          height: 26px;
+          width: 26px;
+          margin-right: 8px;
+          .type-icon {
+            font-size: 16px;
             color: #fff;
           }
+        }
+        .icon-name {
+          min-width: 40px;
         }
         .expense {
           background-color: @primary;
@@ -364,12 +383,13 @@ export default {
       }
 
       .progress {
-        margin-left: 20px;
+        margin-left: 22px;
         width: 160px;
       }
       .amount {
         width: 100px;
         text-align: right;
+        font-weight: 500;
       }
     }
   }
@@ -390,7 +410,8 @@ export default {
     padding: 6px 12px;
     font-size: 14px;
     color: #fff;
-    border-radius: 2px;
+    border: none;
+    border-radius: 4px;
   }
 }
 </style>
