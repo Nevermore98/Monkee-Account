@@ -4,15 +4,18 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes: [
     {
+      name: '/',
       path: '/',
       redirect: '/home'
     },
     {
+      name: 'home',
       path: '/home',
       component: () =>
         import(/* webpackChunkName: "home-chunk" */ '@/views/bill/Home.vue')
     },
     {
+      name: 'statistic',
       path: '/statistic',
       component: () =>
         import(
@@ -20,11 +23,13 @@ const router = createRouter({
         )
     },
     {
+      name: 'user',
       path: '/user',
       component: () =>
         import(/* webpackChunkName: "user-chunk" */ '@/views/user/User.vue')
     },
     {
+      name: 'modifyPassword',
       path: '/modifyPassword',
       component: () =>
         import(
@@ -32,16 +37,20 @@ const router = createRouter({
         )
     },
     {
+      name: 'about',
       path: '/about',
       component: () =>
         import(/* webpackChunkName: "about-chunk" */ '@/views/user/About.vue')
     },
     {
+      name: 'login',
       path: '/login',
       component: () =>
         import(/* webpackChunkName: "login-chunk" */ '@/views/Login.vue')
     },
+
     {
+      name: 'detail',
       path: '/detail',
       component: () =>
         import(

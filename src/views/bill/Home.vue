@@ -67,7 +67,7 @@
 </template>
 
 <script lang="ts">
-import { reactive, ref } from 'vue'
+import { reactive, ref, onActivated } from 'vue'
 import PopType from '@/views/bill/PopType.vue'
 import PopDate from '@/components/PopDate.vue'
 import PopAdd from '@/views/bill/PopAdd.vue'
@@ -104,6 +104,10 @@ export default {
       id: 0,
       name: '全部类型'
     })
+    // onActivated(() => {
+    //   console.log('进入')
+    //   onRefresh()
+    // })
 
     const handleSelectType = (item: BillType) => {
       Object.assign(selectedType, item)
@@ -118,10 +122,9 @@ export default {
       onRefresh()
     }
 
-    const addToggle = () => {}
-
     const getBillList = async () => {
       try {
+        console.log('获取账单')
         const { data } = await axios.get(
           `/bill/list?date=${selectedDate.value}&type_id=${
             selectedType.id || 'all'
@@ -137,6 +140,7 @@ export default {
           item.bills.sort((a, b) => b.id - a.id)
         })
         billList.value = billList.value.concat(data.list)
+        console.log('获取并合并账单')
         monthTotalExpense.value = data.totalExpense.toFixed(2)
         monthTotalIncome.value = data.totalIncome.toFixed(2)
         totalPage.value = data.totalPage
@@ -147,6 +151,7 @@ export default {
           page.value += 1
         } else {
           finished.value = true
+          console.log('完成')
         }
         loading.value = false
       }
@@ -160,6 +165,7 @@ export default {
     }
 
     const onRefresh = () => {
+      console.log('监听到添加账单')
       // 清空列表数据
       finished.value = false
       // 页数重制
@@ -186,7 +192,6 @@ export default {
       popTypeRef,
       popDateRef,
       popAddRef,
-      addToggle,
       handleSelectType,
       handleSelectDate,
       onRefresh,

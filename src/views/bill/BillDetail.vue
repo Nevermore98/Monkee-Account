@@ -54,7 +54,6 @@
     </div>
   </div>
   <div v-else>
-    <!-- <van-empty image="network" description="加载中" /> -->
     <van-skeleton title :row="3" />
   </div>
 </template>

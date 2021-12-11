@@ -3,7 +3,7 @@
     v-model:show="isShowAdd"
     position="bottom"
     round
-    @close="clearPopAddInHome"
+    @close="clearPopAdd"
   >
     <div class="add-wrap">
       <!-- 添加账单头部 -->
@@ -109,17 +109,16 @@
       </div>
 
       <!-- 数字键盘 -->
-      <van-config-provider :theme-vars="NumberPadThemeVars">
-        <van-number-keyboard
-          :show="true"
-          theme="custom"
-          extra-key="."
-          close-button-text="确定"
-          @delete="handleDelete"
-          @input="handleInput"
-          @close="addBill"
-        />
-      </van-config-provider>
+
+      <van-number-keyboard
+        :show="true"
+        theme="custom"
+        extra-key="."
+        close-button-text="确定"
+        @delete="handleDelete"
+        @input="handleInput"
+        @close="addBill"
+      />
     </div>
   </van-popup>
 </template>
@@ -162,16 +161,25 @@ export default {
     const remark = ref('')
     const numberPadButtonColor = ref('#39be77')
     const calendarRef = ref<CalendarInstance>(null)
+    const initDateFromDetail = () => {
+      billAmount.value = props.initData.amount || ''
+      selectedType.id = props.initData.type_id || 0
+      selectedType.name = props.initData.type_name || ''
+      selectedDate.value = dayjs(Number(props.initData.date)).$d
+      remark.value = props.initData.remark || ''
+      payType.value = props.initData.pay_type === 1 ? 'expense' : 'income'
+    }
     watch(
       () => props.initData,
       () => {
         if (id) {
-          billAmount.value = props.initData.amount || ''
-          selectedType.id = props.initData.type_id || 0
-          selectedType.name = props.initData.type_name || ''
-          selectedDate.value = dayjs(Number(props.initData.date)).$d
-          remark.value = props.initData.remark || ''
-          payType.value = props.initData.pay_type === 1 ? 'expense' : 'income'
+          initDateFromDetail()
+          // billAmount.value = props.initData.amount || ''
+          // selectedType.id = props.initData.type_id || 0
+          // selectedType.name = props.initData.type_name || ''
+          // selectedDate.value = dayjs(Number(props.initData.date)).$d
+          // remark.value = props.initData.remark || ''
+          // payType.value = props.initData.pay_type === 1 ? 'expense' : 'income'
         }
       },
       { deep: true, immediate: true }
@@ -190,7 +198,6 @@ export default {
     // 切换收支类型
     const changeType = (type: string) => {
       payType.value = type
-      // TODO 直接操作 DOM 可以实现切换确认键颜色
       changeConfirmButtonColor()
     }
     // 选择收支类型具体图标
@@ -201,7 +208,7 @@ export default {
       let iconName = typeMap[item.id].icon
       return `#icon-${iconName}`
     }
-
+    // 直接操作 DOM 实现切换确认键颜色
     const changeConfirmButtonColor = () => {
       const button: HTMLElement = document.querySelector('.van-key--blue')
       if (payType.value === 'expense') {
@@ -216,25 +223,6 @@ export default {
       calendarPopupHeight: '62%',
       calendarSelectedDayBackgroundColor: '#39be77',
       calendarHeaderTitleHeight: '40px'
-    }
-    // 自定义数字键盘主题
-    //TODO 根据收支类型动态切换数字键盘确定键颜色
-    // watch、函数都不能实现，暂时搁置
-    // const getNumberButtonColor = () => {
-    //   return payType.value === 'expense' ? '#39be77' : '#ecbe25'
-    // }
-    // watch(numberPadButtonColor, () => {
-    //   numberPadButtonColor.value === 'expense' ? '#39be77' : '#ecbe25'
-    // })
-
-    const getNumberButtonColor = () => {
-      console.log(payType.value)
-      return payType.value === 'expense' ? '#39be77' : '#ecbe25'
-    }
-
-    const NumberPadThemeVars = {
-      // NumberKeyboardButtonBackgroundColor:
-      //   payType.value === 'expense' ? '#fff' : '#ecbe25'
     }
 
     const minDate = new Date(2021, 5, 1)
@@ -372,22 +360,24 @@ export default {
     }
 
     // 清空添加账单弹出层数据
-    const clearPopAdd = () => {
+    const clearPopAddInHome = () => {
       billAmount.value = ''
       selectedType.id = 0
       selectedType.name = ''
       payType.value = 'expense'
+      // 清空确认键样式
+      changeConfirmButtonColor()
       isShowAdd.value = false
       selectedDate.value = new Date()
       remark.value = ''
-      document
-        .querySelector('.van-key--blue')
-        .classList.remove('expense-background', 'expense-background')
     }
-    // 弹出添加账单而不确定，直接关闭则清空数据，在账单详情里则不清空
-    const clearPopAddInHome = () => {
-      if (!id) {
-        clearPopAdd()
+    // 点击遮罩层关闭添加账单，若存在 id 即在详情页中则保持原值不变，否则在首页则清空
+    const clearPopAdd = () => {
+      if (id) {
+        initDateFromDetail()
+        changeConfirmButtonColor()
+      } else {
+        clearPopAddInHome()
       }
     }
 
@@ -401,8 +391,6 @@ export default {
       maxDate,
       chooseDate,
       calendarThemeVars,
-      NumberPadThemeVars,
-      // getNumberButtonColor,
       numberPadButtonColor,
       formattedDate,
       handleInput,

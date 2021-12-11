@@ -1,5 +1,8 @@
 <template>
-  <router-view v-slot="{ Component }">
+  <!-- 需要使用动态缓存 -->
+  <!-- https://blog.csdn.net/weixin_43695464/article/details/120178903 -->
+  <!-- https://segmentfault.com/q/1010000040805838 -->
+  <!-- <router-view v-slot="{ Component }">
     <keep-alive :max="6">
       <component
         :is="Component"
@@ -7,7 +10,8 @@
         v-if="isKeepAlive"
       ></component>
     </keep-alive>
-  </router-view>
+  </router-view> -->
+  <router-view />
   <NavBar v-if="isShowNavBar" />
 </template>
 
@@ -29,27 +33,28 @@ export default {
       '/about',
       '/modifyPassword'
     ]
-    const keepAliveRouteList = [
-      '/home',
-      '/statistic',
-      '/user',
-      '/detail',
-      '/modifyPassword',
-      '/about'
-    ]
+    // const keepAliveRouteList = [
+    //   '/home',
+    //   // '/login',
+    //   // '/statistic',
+    //   // '/user',
+    //   '/detail',
+    //   '/modifyPassword',
+    //   '/about'
+    // ]
     const router = useRouter()
     router.afterEach(() => {
       isShowNavBar.value = !noShowTabbarRouteList.includes(
         router.currentRoute.value.path
       )
-      isKeepAlive.value = keepAliveRouteList.includes(
-        router.currentRoute.value.path
-      )
+      // isKeepAlive.value = keepAliveRouteList.includes(
+      //   router.currentRoute.value.path
+      // )
     })
 
     return {
-      isShowNavBar,
-      isKeepAlive
+      isShowNavBar
+      // isKeepAlive
     }
   }
 }
