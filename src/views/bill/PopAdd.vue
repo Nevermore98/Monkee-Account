@@ -239,7 +239,6 @@ export default {
 
     const reset = () => {
       // 日历重置选中日期 无法实现！
-      console.log('fuck')
       calendarRef.value?.reset()
     }
     // 处理数字键盘输入（暂时还不会抽离成 hook T_T）

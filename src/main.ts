@@ -2,7 +2,6 @@ import { createApp } from 'vue'
 import App from '@/App.vue'
 import 'lib-flexible/flexible'
 import router from '@/router'
-import 'default-passive-events'
 import {
   Button,
   Tabbar,

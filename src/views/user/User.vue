@@ -7,8 +7,8 @@
         src="https://nevermore-picbed-1304219157.cos.ap-guangzhou.myqcloud.com/cat%26duck.jpg"
       />
       <div class="info">
-        <span class="name">{{ beautifyName || '' }}</span>
-        <span class="signature">{{ signature || '' }}</span>
+        <div class="name">{{ beautifyName || '' }}</div>
+        <span v-if="signature" class="signature">{{ signature || '' }}</span>
       </div>
     </div>
     <!-- 单元格 -->
@@ -165,6 +165,7 @@ export default {
         font-weight: 500;
       }
       .signature {
+        width: fit-content;
         color: #fff;
         background-color: @primary;
         padding: 1px 5px;
