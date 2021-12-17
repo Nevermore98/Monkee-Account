@@ -13,6 +13,7 @@
     "echarts": "^5.2.2",
     "http-server": "^14.0.0",
     "lib-flexible": "^0.3.2",
+    "pushstate-server": "^3.1.0",
     "vant": "^3.3.0",
     "vue": "^3.2.16",
     "vue-router": "^4.0.12"
