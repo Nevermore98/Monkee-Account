@@ -54,3 +54,22 @@ app.use(Divider)
 app.use(Skeleton)
 
 app.mount('#app')
+
+// 非移动端打开页面弹出二维码
+if (document.documentElement.clientWidth > 500) {
+  const QRCode = document.createElement('img')
+  QRCode.src = 'src/assets/QR_code.png'
+  QRCode.style.position = 'fixed'
+  QRCode.style.left = '50%'
+  QRCode.style.top = '50%'
+  QRCode.style.transform = 'translate(-50%,-50%)'
+  QRCode.style.borderRadius = '20px'
+  QRCode.style.boxShadow = '0 0 10px rgba(0,0,0,0.25)'
+  document.body.appendChild(QRCode)
+
+  // 点击空白处隐藏二维码
+  const app = document.getElementById('app')
+  app.addEventListener('click', () => {
+    QRCode.style.display = 'none'
+  })
+}
