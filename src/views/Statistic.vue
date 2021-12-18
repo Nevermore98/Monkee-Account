@@ -160,6 +160,7 @@ export default {
 
     const getMouthBillData = async () => {
       try {
+        // @ts-ignore
         const { data, code } = await axios.get(
           `/bill/data?date=${selectedDate.value}`
         )

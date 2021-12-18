@@ -165,6 +165,7 @@ export default {
       billAmount.value = props.initData.amount || ''
       selectedType.id = props.initData.type_id || 0
       selectedType.name = props.initData.type_name || ''
+      // @ts-ignore
       selectedDate.value = dayjs(Number(props.initData.date)).$d
       remark.value = props.initData.remark || ''
       payType.value = props.initData.pay_type === 1 ? 'expense' : 'income'
@@ -579,7 +580,7 @@ export default {
   }
   .van-field__clear {
     position: absolute;
-    right: 16%;
+    right: 8%;
   }
   .van-field__word-limit {
     position: absolute;

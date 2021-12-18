@@ -61,6 +61,5 @@ export default {
 @import url('@/config/custom.less');
 .van-tabbar-item--active {
   color: @primary!important;
-  background-color: @primary;
 }
 </style>
