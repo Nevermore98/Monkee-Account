@@ -25,7 +25,7 @@
       <div class="info">
         <van-field
           label="记录时间"
-          :model-value="dayjs(Number(detail.date)).format('YYYY月MM日DD HH:mm')"
+          :model-value="dayjs(Number(detail.date)).format('YYYY年MM月DD日 HH:mm')"
           readonly
         />
         <van-field label="备注" :model-value="detail.remark || '-'" readonly />

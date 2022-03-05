@@ -199,6 +199,8 @@ export default {
     // 切换收支类型
     const changeType = (type: string) => {
       payType.value = type
+      selectedType.id = 0
+      selectedType.name = ''
       changeConfirmButtonColor()
     }
     // 选择收支类型具体图标

@@ -129,6 +129,8 @@ export default {
             selectedType.id || 'all'
           }&page=${page.value}&page_size=31`
         )
+        console.log(data);
+
         if (refreshing.value) {
           billList.value = []
           refreshing.value = false
