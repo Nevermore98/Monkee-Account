@@ -25,7 +25,9 @@
       <div class="info">
         <van-field
           label="记录时间"
-          :model-value="dayjs(Number(detail.date)).format('YYYY年MM月DD日 HH:mm')"
+          :model-value="
+            dayjs(Number(detail.date)).format('YYYY年MM月DD日 HH:mm')
+          "
           readonly
         />
         <van-field label="备注" :model-value="detail.remark || '-'" readonly />
@@ -38,7 +40,7 @@
           </svg>
           删除
         </van-button>
-        <van-button @click="popAddRef.isShowAdd = true" class="edit-button">
+        <van-button @click="editBill" class="edit-button">
           <svg class="icon operation-icon">
             <use xlink:href="#icon-edit" />
           </svg>
@@ -62,7 +64,7 @@ import { onMounted, reactive, ref, toRefs } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Header from '@/components/Header.vue'
 import dayjs from 'dayjs'
-import { typeMap } from '@/utils'
+import { changeConfirmButtonColor, typeMap } from '@/utils'
 import axios from '@/utils/axios'
 import { Toast, Dialog } from 'vant'
 import { DayBillItem, ReqDetail } from '@/api/bill'
@@ -116,6 +118,14 @@ export default {
       return `#icon-${iconName}`
     }
 
+    const editBill = () => {
+      popAddRef.value.isShowAdd = true
+      // 异步执行，因为弹出层弹出需要时间，同步执行就获取不到 button
+      setTimeout(() => {
+        changeConfirmButtonColor(detail.pay_type === 1 ? 'expense' : 'income')
+      }, 0)
+    }
+
     return {
       dayjs,
       detail,
@@ -123,6 +133,7 @@ export default {
       deleteDetail,
       getDetail,
       getHref,
+      editBill,
       popAddRef
     }
   }
@@ -182,6 +193,7 @@ export default {
     padding: 0 12px;
     font-size: 14px;
     text-align: left;
+    margin-bottom: 20px;
     .van-cell {
       padding: 10px;
     }

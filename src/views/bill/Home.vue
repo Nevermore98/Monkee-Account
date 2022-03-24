@@ -129,7 +129,7 @@ export default {
             selectedType.id || 'all'
           }&page=${page.value}&page_size=31`
         )
-        console.log(data);
+        console.log(data)
 
         if (refreshing.value) {
           billList.value = []
@@ -157,10 +157,12 @@ export default {
     }
 
     const onLoad = () => {
-      if (!refreshing.value && page.value < totalPage.value) {
-        page.value = page.value + 1
-      }
-      getBillList()
+      setTimeout(() => {
+        if (!refreshing.value && page.value < totalPage.value) {
+          page.value = page.value + 1
+        }
+        getBillList()
+      }, 500)
     }
 
     const onRefresh = () => {
@@ -218,7 +220,7 @@ export default {
     background-color: @primary;
     color: #fff;
     font-size: 14px;
-    padding-left: 20px;
+    padding-left: 10px;
     z-index: 100;
     .type-wrap {
       background-color: lighten(@primary, 4%);
@@ -253,6 +255,7 @@ export default {
       .time {
         margin-right: 4px;
         line-height: 18px;
+        min-width: 86px;
         font-size: 14px;
         color: #fff;
         background-color: @primary;
@@ -264,7 +267,11 @@ export default {
         }
       }
       .expense {
+        .one-line-ellipsis();
         margin-right: 10px;
+      }
+      .income {
+        .one-line-ellipsis();
       }
     }
   }
@@ -283,7 +290,7 @@ export default {
     height: 42px;
     font-size: 14px;
     border: none;
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.1);
     background-color: #fff;
     color: @primary;
     .add-icon {
@@ -299,6 +306,12 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+}
+.content-wrap {
+  // 下拉刷新不被遮挡
+  .van-pull-refresh {
+    overflow: unset;
   }
 }
 </style>

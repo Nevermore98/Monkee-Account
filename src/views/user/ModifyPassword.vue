@@ -1,14 +1,12 @@
 <template>
   <div class="edit">
     <Header title="修改密码" />
-    <Header title="修改密码" />
 
     <van-form @submit="submitModify">
       <div class="edit-wrap">
         <van-cell-group inset>
           <van-field
             v-model="oldPassword"
-            type="password"
             label="原密码"
             placeholder="请输入原密码"
             clearable
@@ -16,7 +14,6 @@
           />
           <van-field
             v-model="newPassword"
-            type="password"
             label="新密码"
             placeholder="请输入新密码"
             clearable
@@ -24,7 +21,6 @@
           />
           <van-field
             v-model="repeatPassword"
-            type="password"
             label="确认密码"
             placeholder="请再次输入新密码"
             @blur="comparePassword"
@@ -124,7 +120,7 @@ export default {
   height: 100%;
   background-color: #f5f5f5;
   .van-form {
-    padding: 0 30px;
+    padding: 40px 30px;
   }
 
   .edit-wrap {

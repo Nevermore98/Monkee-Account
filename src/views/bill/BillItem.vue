@@ -158,15 +158,10 @@ export default {
   .bill-item {
     // less mixin 语法
     .button-active();
-
-    .van-cell__value {
-      font-weight: 500 !important;
-    }
     .icon-wrap {
       display: flex;
       justify-content: center;
       align-items: center;
-      background-color: #f5f5f5;
       border-radius: 50%;
       height: 36px;
       width: 36px;
@@ -206,8 +201,12 @@ export default {
 .item-wrap {
   .van-cell {
     padding: 12px 16px !important;
+    .van-cell__label {
+      .multiple-line-ellipsis();
+    }
     .van-cell__value {
-      font-weight: 500 !important;
+      font-weight: 500;
+      max-width: 90px;
     }
   }
 }

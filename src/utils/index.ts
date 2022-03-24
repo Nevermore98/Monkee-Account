@@ -48,3 +48,15 @@ export const typeMap = {
     icon: 'other-income'
   }
 }
+
+// 直接操作 DOM 实现切换确认键颜色
+export const changeConfirmButtonColor = (type: string) => {
+  const button: HTMLElement | null = document.querySelector('.van-key--blue')
+  if (button) {
+    if (type === 'expense') {
+      button.style.background = '#39be77'
+    } else {
+      button.style.background = '#ecbe25'
+    }
+  }
+}

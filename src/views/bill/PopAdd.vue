@@ -43,7 +43,6 @@
           :max-date="maxDate"
           :min-date="minDate"
           ref="calendarRef"
-          @close="reset"
         />
       </van-config-provider>
       <!-- 金额显示框 -->
@@ -136,7 +135,7 @@ import type {
 } from 'vant'
 
 import axios from 'axios'
-import { typeMap } from '@/utils/index'
+import { changeConfirmButtonColor, typeMap } from '@/utils/index'
 import { BillType, BillTypeList, DayBillItem } from '@/api/bill'
 // import useCalculator from '@/hooks/useCalculator'
 
@@ -161,7 +160,22 @@ export default {
     const remark = ref('')
     const numberPadButtonColor = ref('#39be77')
     const calendarRef = ref<CalendarInstance>(null)
-    const initDateFromDetail = () => {
+
+    // 初始化添加账单弹出层
+    const initAddBill = () => {
+      billAmount.value = ''
+      selectedType.id = 0
+      selectedType.name = ''
+      payType.value = 'expense'
+      // 添加账单时，数字键盘确认键颜色默认为支出颜色
+      changeConfirmButtonColor('expense')
+      isShowAdd.value = false
+      selectedDate.value = new Date()
+      remark.value = ''
+    }
+    // 初始化编辑账单弹出层
+    // TODO 弹出确认键颜色
+    const initEditBill = () => {
       billAmount.value = props.initData.amount || ''
       selectedType.id = props.initData.type_id || 0
       selectedType.name = props.initData.type_name || ''
@@ -174,13 +188,12 @@ export default {
       () => props.initData,
       () => {
         if (id) {
-          initDateFromDetail()
-          // billAmount.value = props.initData.amount || ''
-          // selectedType.id = props.initData.type_id || 0
-          // selectedType.name = props.initData.type_name || ''
-          // selectedDate.value = dayjs(Number(props.initData.date)).$d
-          // remark.value = props.initData.remark || ''
-          // payType.value = props.initData.pay_type === 1 ? 'expense' : 'income'
+          console.log(dayjs(Number(props.initData.date)).$d)
+          console.log(new Date())
+          console.log(calendarRef)
+
+          calendarRef.value?.reset(dayjs(Number(props.initData.date)).$d)
+          initEditBill()
         }
       },
       { deep: true, immediate: true }
@@ -193,7 +206,6 @@ export default {
       } = await axios.get('/type/list')
       expenseList.value = list.filter((i) => i.type == 1)
       incomeList.value = list.filter((i) => i.type == 2)
-      // 日历重置选中日期 无法实现！
       calendarRef.value?.reset()
     })
     // 切换收支类型
@@ -201,7 +213,7 @@ export default {
       payType.value = type
       selectedType.id = 0
       selectedType.name = ''
-      changeConfirmButtonColor()
+      changeConfirmButtonColor(type)
     }
     // 选择收支类型具体图标
     const chooseTypeIcon = (item: BillType) => {
@@ -211,15 +223,18 @@ export default {
       let iconName = typeMap[item.id].icon
       return `#icon-${iconName}`
     }
-    // 直接操作 DOM 实现切换确认键颜色
-    const changeConfirmButtonColor = () => {
-      const button: HTMLElement = document.querySelector('.van-key--blue')
-      if (payType.value === 'expense') {
-        button.style.background = '#39be77'
-      } else {
-        button.style.background = '#ecbe25'
-      }
-    }
+    // // 直接操作 DOM 实现切换确认键颜色
+    // const changeConfirmButtonColor = (type: string) => {
+    //   const button: HTMLElement | null =
+    //     document.querySelector('.van-key--blue')
+    //   if (button) {
+    //     if (type === 'expense') {
+    //       button.style.background = '#39be77'
+    //     } else {
+    //       button.style.background = '#ecbe25'
+    //     }
+    //   }
+    // }
 
     // 自定义日历主题
     const calendarThemeVars = {
@@ -236,15 +251,13 @@ export default {
     )
 
     const chooseDate = (value: Date) => {
+      console.log(calendarRef.value)
       isShowAddDate.value = false
       selectedDate.value = value
     }
 
-    const reset = () => {
-      // 日历重置选中日期 无法实现！
-      calendarRef.value?.reset()
-    }
     // 处理数字键盘输入（暂时还不会抽离成 hook T_T）
+    // TODO 抽离 hook
     const handleInput = (inputValue: '.' | number) => {
       // 处理数字
       if (inputValue !== '.') {
@@ -360,26 +373,16 @@ export default {
     const handleDelete = () => {
       billAmount.value = billAmount.value.slice(0, billAmount.value.length - 1)
     }
-
-    // 清空添加账单弹出层数据
-    const clearPopAddInHome = () => {
-      billAmount.value = ''
-      selectedType.id = 0
-      selectedType.name = ''
-      payType.value = 'expense'
-      // 清空确认键样式
-      changeConfirmButtonColor()
-      isShowAdd.value = false
-      selectedDate.value = new Date()
-      remark.value = ''
-    }
+    // TODO calendarRef 获取不到？？
     // 点击遮罩层关闭添加账单，若存在 id 即在详情页中则保持原值不变，否则在首页则清空
     const clearPopAdd = () => {
       if (id) {
-        initDateFromDetail()
-        changeConfirmButtonColor()
+        console.log(calendarRef.value)
+        calendarRef.value?.reset(dayjs(Number(props.initData.date)).$d)
+        initEditBill()
       } else {
-        clearPopAddInHome()
+        calendarRef.value?.reset()
+        initAddBill()
       }
     }
 
@@ -407,8 +410,7 @@ export default {
       addBill,
       remark,
       clearPopAdd,
-      clearPopAddInHome,
-      reset
+      clearPopAddInHome: initAddBill
     }
   }
 }

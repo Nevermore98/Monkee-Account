@@ -109,8 +109,8 @@
         size="small"
         class="empty-button"
         :class="{
-          'expense-background': curPayType == 'expense',
-          'income-background': curPayType == 'income'
+          'expense-background': curPayType === 'expense',
+          'income-background': curPayType === 'income'
         }"
         @click="$router.push('/home')"
       >
@@ -222,7 +222,7 @@ export default {
             min: Math.min(..._data.map((item) => item.number)),
             max: Math.max(..._data.map((item) => item.number)),
             inRange: {
-              colorLightness: [0.7, 0.5]
+              colorLightness: [0.8, 0.5]
             }
           },
           series: [
