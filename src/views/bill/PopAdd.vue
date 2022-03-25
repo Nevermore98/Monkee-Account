@@ -108,7 +108,6 @@
       </div>
 
       <!-- 数字键盘 -->
-
       <van-number-keyboard
         :show="true"
         theme="custom"
@@ -125,19 +124,13 @@
 <script lang="ts">
 import { onMounted, ref, computed, watch, PropType, reactive } from 'vue'
 import dayjs from 'dayjs'
-import { Button, Icon, Toast } from 'vant'
-import type {
-  CalendarType,
-  CalendarProps,
-  CalendarDayItem,
-  CalendarDayType,
-  CalendarInstance
-} from 'vant'
+import { Toast } from 'vant'
+import type { CalendarInstance } from 'vant'
 
 import axios from 'axios'
 import { changeConfirmButtonColor, typeMap } from '@/utils/index'
 import { BillType, BillTypeList, DayBillItem } from '@/api/bill'
-// import useCalculator from '@/hooks/useCalculator'
+import useInput from '@/hooks/useInput'
 
 export default {
   emits: ['refresh'],
@@ -150,7 +143,6 @@ export default {
     const isShowAddDate = ref(false)
     const payType = ref('expense')
     const selectedDate = ref(new Date())
-    const billAmount = ref('')
     const selectedType = reactive<BillType>({
       id: 0,
       name: ''
@@ -160,6 +152,8 @@ export default {
     const remark = ref('')
     const numberPadButtonColor = ref('#39be77')
     const calendarRef = ref<CalendarInstance>(null)
+    // 使用 useInput hook
+    const { billAmount, handleInput, handleDelete } = useInput()
 
     // 初始化添加账单弹出层
     const initAddBill = () => {
@@ -188,10 +182,6 @@ export default {
       () => props.initData,
       () => {
         if (id) {
-          console.log(dayjs(Number(props.initData.date)).$d)
-          console.log(new Date())
-          console.log(calendarRef)
-
           calendarRef.value?.reset(dayjs(Number(props.initData.date)).$d)
           initEditBill()
         }
@@ -223,18 +213,6 @@ export default {
       let iconName = typeMap[item.id].icon
       return `#icon-${iconName}`
     }
-    // // 直接操作 DOM 实现切换确认键颜色
-    // const changeConfirmButtonColor = (type: string) => {
-    //   const button: HTMLElement | null =
-    //     document.querySelector('.van-key--blue')
-    //   if (button) {
-    //     if (type === 'expense') {
-    //       button.style.background = '#39be77'
-    //     } else {
-    //       button.style.background = '#ecbe25'
-    //     }
-    //   }
-    // }
 
     // 自定义日历主题
     const calendarThemeVars = {
@@ -254,68 +232,6 @@ export default {
       console.log(calendarRef.value)
       isShowAddDate.value = false
       selectedDate.value = value
-    }
-
-    // 处理数字键盘输入（暂时还不会抽离成 hook T_T）
-    // TODO 抽离 hook
-    const handleInput = (inputValue: '.' | number) => {
-      // 处理数字
-      if (inputValue !== '.') {
-        // 处理0
-        if (inputValue === 0) {
-          // 首位为 0，且不包含小数点，则重复输入 0 返回原值不变
-          if (
-            billAmount.value.substring(0, 1) === '0' &&
-            billAmount.value.indexOf('.') === -1
-          ) {
-            return billAmount.value
-          }
-        }
-        // 处理非零数字
-        if (inputValue !== 0) {
-          if (
-            billAmount.value.substring(0, 1) === '0' &&
-            billAmount.value.indexOf('.') === -1
-          ) {
-            return (billAmount.value = inputValue.toString())
-          }
-        }
-        // 保留小数点前六位
-        if (
-          billAmount.value.length >= 6 &&
-          billAmount.value.indexOf('.') === -1
-        ) {
-          Toast({
-            message: '金额不能大于1,000,000',
-            position: 'bottom'
-          })
-          return billAmount.value
-        }
-        // 保留小数点后两位
-        if (
-          billAmount.value.includes('.') &&
-          billAmount.value.split('.')[1].length >= 2
-        ) {
-          Toast({
-            message: '仅保留小数点后两位',
-            position: 'bottom'
-          })
-          return billAmount.value
-        }
-        return (billAmount.value += inputValue)
-      }
-      // 处理小数点
-      if (inputValue === '.') {
-        // 首位输入小数点，返回 '0.'
-        if (billAmount.value.substring(0, 1) === '') {
-          return (billAmount.value = '0.')
-        }
-        // 已存在小数点，则重复输入小数点返回原值不变
-        if (billAmount.value.includes('.')) {
-          return billAmount.value
-        }
-        return (billAmount.value += '.')
-      }
     }
 
     const addBill = async () => {
@@ -370,9 +286,6 @@ export default {
       }
     }
 
-    const handleDelete = () => {
-      billAmount.value = billAmount.value.slice(0, billAmount.value.length - 1)
-    }
     // TODO calendarRef 获取不到？？
     // 点击遮罩层关闭添加账单，若存在 id 即在详情页中则保持原值不变，否则在首页则清空
     const clearPopAdd = () => {
