@@ -30,22 +30,9 @@
         </ul>
       </p>
       <p>
-        本项目的大部分页面设计是对
-        <a href="#小程序://微信记账本/MolMW4qwonfOZ1f">微信官方记账本小程序</a>
-        的拙劣模仿。如有雷同，纯属致敬😝
+        本项目的大部分页面设计是对微信官方记账本小程序的拙劣模仿。如有雷同，纯属致敬😝
       </p>
     </div>
-    <van-divider
-      content-position="left"
-      :style="{ color: '#39be77', borderColor: '#39be77', padding: '0 16px' }"
-    >
-      后续改进
-    </van-divider>
-    <div class="content">
-      <p>本项目代码较为臃肿，后续会采用 Vue3.2 版本推崇的 <a href="https://v3.cn.vuejs.org/api/sfc-script-setup.html#%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95">script-setup</a> 语法以及抽离 hooks 的方法改写。</p>
-      <p>存在用户体验不好的地方如：每次点击每笔账单详情返回后，账单页会刷新导致选中的日期初始化，后续会使用 keep-alive 缓存组件。</p>
-    </div>
-
     <van-divider
       content-position="left"
       :style="{ color: '#39be77', borderColor: '#39be77', padding: '0 16px' }"

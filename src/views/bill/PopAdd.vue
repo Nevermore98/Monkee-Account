@@ -39,6 +39,7 @@
           v-model:show="isShowAddDate"
           :show-confirm="false"
           @confirm="chooseDate"
+          @open="openCalendar"
           :row-height="60"
           :max-date="maxDate"
           :min-date="minDate"
@@ -168,7 +169,6 @@ export default {
       remark.value = ''
     }
     // 初始化编辑账单弹出层
-    // TODO 弹出确认键颜色
     const initEditBill = () => {
       billAmount.value = props.initData.amount || ''
       selectedType.id = props.initData.type_id || 0
@@ -182,7 +182,6 @@ export default {
       () => props.initData,
       () => {
         if (id) {
-          calendarRef.value?.reset(dayjs(Number(props.initData.date)).$d)
           initEditBill()
         }
       },
@@ -194,8 +193,8 @@ export default {
       const {
         data: { list }
       } = await axios.get('/type/list')
-      expenseList.value = list.filter((i) => i.type == 1)
-      incomeList.value = list.filter((i) => i.type == 2)
+      expenseList.value = list.filter((i) => i.type === '1')
+      incomeList.value = list.filter((i) => i.type === '2')
       calendarRef.value?.reset()
     })
     // 切换收支类型
@@ -220,6 +219,13 @@ export default {
       calendarSelectedDayBackgroundColor: '#39be77',
       calendarHeaderTitleHeight: '40px'
     }
+    // 弹出日历，如果是编辑账单，则默认选中当前账单的日期
+    const openCalendar = () => {
+      if (id) {
+        initEditBill()
+        calendarRef.value?.reset(dayjs(Number(props.initData.date)).$d)
+      }
+    }
 
     const minDate = new Date(2021, 5, 1)
     const maxDate = new Date()
@@ -229,7 +235,6 @@ export default {
     )
 
     const chooseDate = (value: Date) => {
-      console.log(calendarRef.value)
       isShowAddDate.value = false
       selectedDate.value = value
     }
@@ -286,7 +291,6 @@ export default {
       }
     }
 
-    // TODO calendarRef 获取不到？？
     // 点击遮罩层关闭添加账单，若存在 id 即在详情页中则保持原值不变，否则在首页则清空
     const clearPopAdd = () => {
       if (id) {
@@ -300,6 +304,7 @@ export default {
     }
 
     return {
+      calendarRef,
       isShowAdd,
       isShowAddDate,
       payType,
@@ -308,6 +313,7 @@ export default {
       minDate,
       maxDate,
       chooseDate,
+      openCalendar,
       calendarThemeVars,
       numberPadButtonColor,
       formattedDate,

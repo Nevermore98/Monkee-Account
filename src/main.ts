@@ -23,7 +23,8 @@ import {
   Progress,
   Dialog,
   Divider,
-  Skeleton
+  Skeleton,
+  Empty
 } from 'vant'
 import 'vant/lib/index.css' // 全局引入样式
 import '@/index.less'
@@ -52,6 +53,7 @@ app.use(Progress)
 app.use(Dialog)
 app.use(Divider)
 app.use(Skeleton)
+app.use(Empty)
 
 app.mount('#app')
 

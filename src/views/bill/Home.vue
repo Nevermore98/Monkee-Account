@@ -32,12 +32,17 @@
     </div>
     <!-- 账单列表 -->
     <div class="content-wrap">
-      <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
+      <van-pull-refresh
+        v-if="billList.length > 0"
+        v-model="refreshing"
+        @refresh="onRefresh"
+      >
         <van-list
           v-model:loading="loading"
           :finished="finished"
-          finished-text="没有更多了"
           @load="onLoad"
+          :finished-text="finishedText"
+          :immediate-check="true"
         >
           <BillItem
             v-for="dayBillList in billList"
@@ -46,6 +51,7 @@
           />
         </van-list>
       </van-pull-refresh>
+      <van-empty v-else image="search" description="暂无账单" />
     </div>
     <!-- 添加账单按钮 -->
     <van-button
@@ -67,7 +73,7 @@
 </template>
 
 <script lang="ts">
-import { reactive, ref, onActivated } from 'vue'
+import { onMounted, reactive, ref, watch, computed } from 'vue'
 import PopType from '@/views/bill/PopType.vue'
 import PopDate from '@/components/PopDate.vue'
 import PopAdd from '@/views/bill/PopAdd.vue'
@@ -99,82 +105,101 @@ export default {
     const finished = ref(false)
     const refreshing = ref(false)
     const selectedDate = ref(dayjs().format('YYYY-MM'))
-
     const selectedType = reactive<BillType>({
       id: 0,
       name: '全部类型'
     })
-    // onActivated(() => {
-    //   console.log('进入')
-    //   onRefresh()
+
+    onMounted(() => {
+      getBillList()
+    })
+
+    watch([selectedDate, page, selectedType], () => {
+      getBillList()
+    })
+
+    const finishedText = computed(() => {
+      return page.value === 1 ? '' : '没有更多了'
+    })
+
+    // const loadingText = computed(() => {
+    //   return page.value === 1 ? '' : '加载中fuck...'
     // })
 
     const handleSelectType = (item: BillType) => {
       Object.assign(selectedType, item)
-      // 等价于
-      // selectedType.id = item.id
-      // selectedType.name = item.name
-      onRefresh()
+      refreshing.value = true
+      page.value = 1
+      getBillList()
     }
 
     const handleSelectDate = (item: string) => {
+      if (selectedDate.value === item) return
+
+      refreshing.value = true
+      loading.value = false
+      finished.value = false
+      page.value = 1
       selectedDate.value = item
-      onRefresh()
+      getBillList()
     }
 
     const getBillList = async () => {
-      try {
-        const { data } = await axios.get(
-          `/bill/list?date=${selectedDate.value}&type_id=${
-            selectedType.id || 'all'
-          }&page=${page.value}&page_size=31`
-        )
-        console.log(data)
-
-        if (refreshing.value) {
-          billList.value = []
-          refreshing.value = false
-        }
-        loading.value = false
-        // 通过 id 倒序 data.list 的每项的 bills数组，尝试使用 reverse() 无效
-        data.list.forEach((item) => {
-          item.bills.sort((a, b) => b.id - a.id)
-        })
+      const { data } = await axios.get(
+        `/bill/list?date=${selectedDate.value}&type_id=${
+          selectedType.id || 'all'
+        }&page=${page.value}&page_size=5`
+      )
+      console.log(data)
+      // 按时间倒序
+      data.list.forEach((item) => {
+        item.bills.sort((a, b) => b.id - a.id)
+      })
+      console.log(page.value)
+      if (page.value === 1) {
+        billList.value = data.list
+      } else {
         billList.value = billList.value.concat(data.list)
-        monthTotalExpense.value = data.totalExpense.toFixed(2)
-        monthTotalIncome.value = data.totalIncome.toFixed(2)
-        totalPage.value = data.totalPage
-      } catch (error) {
-        console.log(error)
-      } finally {
-        if (page.value < totalPage.value) {
-          page.value += 1
+      }
+
+      monthTotalExpense.value = data.totalExpense.toFixed(2)
+      monthTotalIncome.value = data.totalIncome.toFixed(2)
+      totalPage.value = data.totalPage
+
+      // 下拉刷新成功状态
+      refreshing.value = false
+      // 上拉加载成功状态
+      loading.value = false
+    }
+    // 下拉刷新
+    const onRefresh = () => {
+      refreshing.value = true
+      loading.value = false
+      finished.value = false
+      setTimeout(() => {
+        if (page.value !== 1) {
+          page.value = 1
         } else {
+          getBillList()
+        }
+      }, 200)
+    }
+    // 上拉加载
+    const onLoad = () => {
+      // 只有一页，不触发加载（实现下拉刷新单页账单，不出现'加载中'）
+      if (page.value === totalPage.value) {
+        finished.value = true
+        return
+      }
+      setTimeout(() => {
+        if (page.value < totalPage.value) {
+          loading.value = true
+          page.value = page.value + 1
+        } else {
+          loading.value = false
           finished.value = true
         }
-        loading.value = false
-      }
-    }
-
-    const onLoad = () => {
-      setTimeout(() => {
-        if (!refreshing.value && page.value < totalPage.value) {
-          page.value = page.value + 1
-        }
-        getBillList()
-      }, 500)
-    }
-
-    const onRefresh = () => {
-      // 清空列表数据
-      finished.value = false
-      // 页数重制
-      page.value = 1
-      // 重新加载数据
-      // 将 loading 设置为 true，表示处于加载状态
-      refreshing.value = true
-      loading.value = true
-      onLoad()
+      }, 200)
     }
 
     return {
@@ -185,6 +210,7 @@ export default {
       list,
       loading,
       finished,
+      finishedText,
       refreshing,
       selectedDate,
       billList,
@@ -203,11 +229,13 @@ export default {
 
 <style lang="less" scoped>
 @import url('@/config/custom.less');
+
 .home {
   height: 100%;
   display: flex;
   flex-direction: column;
   padding-top: 90px;
+
   .header {
     position: fixed;
     top: 0;
@@ -222,6 +250,7 @@ export default {
     font-size: 14px;
     padding-left: 10px;
     z-index: 100;
+
     .type-wrap {
       background-color: lighten(@primary, 4%);
       display: flex;
@@ -234,9 +263,11 @@ export default {
       align-self: baseline;
       color: #fff;
       font-size: 14px;
+
       .all-type {
         margin-right: 12px;
       }
+
       .all-type::after {
         content: '';
         position: absolute;
@@ -247,11 +278,13 @@ export default {
         background-color: #fff;
       }
     }
+
     .data-wrap {
       display: flex;
       align-items: center;
       margin-top: 8px;
       font-size: 14px;
+
       .time {
         margin-right: 4px;
         line-height: 18px;
@@ -261,20 +294,24 @@ export default {
         background-color: @primary;
         border: none;
         border-radius: 4px;
+
         .icon-sort-down {
           margin-left: 2px;
           vertical-align: 0em;
         }
       }
+
       .expense {
         .one-line-ellipsis();
         margin-right: 10px;
       }
+
       .income {
         .one-line-ellipsis();
       }
     }
   }
+
   .content-wrap {
     height: calc(~'(100% - 50px)');
     overflow: hidden;
@@ -282,6 +319,7 @@ export default {
     background-color: #f5f5f5;
     padding: 8px;
   }
+
   .add-wrap {
     position: fixed;
     right: 20px;
@@ -293,6 +331,7 @@ export default {
     box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.1);
     background-color: #fff;
     color: @primary;
+
     .add-icon {
       font-size: 24px;
       margin-right: 4px;
@@ -308,6 +347,7 @@ export default {
     align-items: center;
   }
 }
+
 .content-wrap {
   // 下拉刷新不被遮挡
   .van-pull-refresh {
