@@ -247,7 +247,7 @@ export default {
         })
         return
       }
-      if (Number(billAmount.value).toFixed() === '0') {
+      if (Number(billAmount.value).toFixed(2) === '0.00') {
         Toast({
           message: '输入金额不能为零',
           position: 'bottom'

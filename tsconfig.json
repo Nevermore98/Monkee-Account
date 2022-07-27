@@ -3,8 +3,10 @@
     "baseUrl": "./",
     "paths": {
       "@/*": ["src/*"],
-      "@components/*": ["src/components/*"],
+      "@components/*": ["src/components/*"]
     },
     "esModuleInterop": true,
+    // 解决报错 “无法使用 JSX，除非提供了 "--jsx" 标志”
+    "jsx": "preserve"
   }
 }
