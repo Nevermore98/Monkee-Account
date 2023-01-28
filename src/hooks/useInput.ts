@@ -4,6 +4,7 @@ import { Toast } from 'vant'
 const useInput = () => {
   const billAmount = ref('')
   const handleInput = (inputValue: '.' | number) => {
+    console.log(inputValue)
     // 处理数字
     if (inputValue !== '.') {
       // 处理0

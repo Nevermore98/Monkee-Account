@@ -123,7 +123,7 @@ export default {
     })
 
     // const loadingText = computed(() => {
-    //   return page.value === 1 ? '' : '加载中fuck...'
+    //   return page.value === 1 ? '' : '加载中...'
     // })
 
     const handleSelectType = (item: BillType) => {

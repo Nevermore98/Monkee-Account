@@ -61,7 +61,7 @@ app.mount('#app')
 if (document.documentElement.clientWidth > 500) {
   const QRCode = document.createElement('img')
   QRCode.src =
-    'https://nevermore-picbed-1304219157.cos.ap-guangzhou.myqcloud.com/QR_code.png'
+    'https://nevermore-picbed-1304219157.cos.ap-guangzhou.myqcloud.com/monkee-vue-qrcode.png'
   QRCode.style.position = 'fixed'
   QRCode.style.left = '50%'
   QRCode.style.top = '50%'
