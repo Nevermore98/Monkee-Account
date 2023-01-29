@@ -99,7 +99,7 @@ export default {
             password: state.password
           })
           localStorage.setItem('token', data.token)
-          window.location.href = '/'
+          window.location.href = './'
         } else {
           state.verifyCode = verifyRef.value.verifyCode || ''
           if (

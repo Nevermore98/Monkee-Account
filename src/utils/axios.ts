@@ -3,7 +3,9 @@ import { Toast } from 'vant'
 import router from '@/router'
 
 axios.defaults.baseURL =
-  process.env.NODE_ENV === 'development' ? '/api' : '//47.99.134.126:7008/api'
+  process.env.NODE_ENV === 'development'
+    ? '/api'
+    : 'https://monkee.online/account-vue-middle/api'
 axios.defaults.withCredentials = true
 axios.defaults.headers['X-Requested-With'] = 'XMLHttpRequest'
 axios.defaults.headers['Authorization'] = `${
