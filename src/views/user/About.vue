@@ -9,14 +9,6 @@
     </van-divider>
     <div class="content">
       <p>
-        本项目是我在付费学习
-        <a href="https://www.lanqiao.cn/courses/3097"
-          >人人都能做的 Vue 3 记账本</a>
-        实战课程过程中，加上一些自己的思考，自己动手实践完成的项目。此外，部分代码参考了开源仓库
-        <a href="https://github.com/Blackn-L/day-day-account-book-frontend"
-          >呆呆记账本</a>。
-      </p>
-      <p>
         本项目使用到的技术有：<strong
           >Vue3 + Typescript + Vite2 + Vant3 + Echarts5 + Axios</strong
         >。

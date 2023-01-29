@@ -11,7 +11,7 @@
             v-model="username"
             name="username"
             label="账号"
-            placeholder="请输入账号"
+            placeholder="测试账号：admin"
             :rules="[{ required: true, message: '请填写账号' }]"
             autocomplete="on"
           />
@@ -21,7 +21,7 @@
             type="password"
             name="password"
             label="密码"
-            placeholder="请输入密码"
+            placeholder="测试密码：111111"
             :rules="[
               { required: true, message: '请输入6-20位密码，区分大小写' }
             ]"
@@ -98,7 +98,7 @@ export default {
             username: state.username,
             password: state.password
           })
-          localStorage.setItem('token', data.token)
+          localStorage.setItem('account_vue_token', data.token)
           window.location.href = './'
         } else {
           state.verifyCode = verifyRef.value.verifyCode || ''

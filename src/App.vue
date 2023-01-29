@@ -16,6 +16,7 @@
 </template>
 
 <script lang="ts">
+import { Toast } from 'vant'
 import { useRouter } from 'vue-router'
 import { reactive, ref } from 'vue'
 import NavBar from '@/components/NavBar.vue'
@@ -43,6 +44,13 @@ export default {
     //   '/about'
     // ]
     const router = useRouter()
+    router.beforeEach((to) => {
+      const token = localStorage.getItem('account_vue_token')
+      if (to.path !== '/login' && !token) {
+        Toast.fail('请先登录')
+        return '/login'
+      }
+    })
     router.afterEach(() => {
       isShowNavBar.value = !noShowTabbarRouteList.includes(
         router.currentRoute.value.path

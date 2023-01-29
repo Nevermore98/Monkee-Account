@@ -124,7 +124,7 @@ export default {
     }
 
     const logout = () => {
-      localStorage.removeItem('token')
+      localStorage.removeItem('account_vue_token')
       router.push({ path: '/login' })
     }
 

@@ -9,7 +9,7 @@ axios.defaults.baseURL =
 axios.defaults.withCredentials = true
 axios.defaults.headers['X-Requested-With'] = 'XMLHttpRequest'
 axios.defaults.headers['Authorization'] = `${
-  localStorage.getItem('token') || null
+  localStorage.getItem('account_vue_token') || null
 }`
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 
@@ -23,6 +23,7 @@ axios.interceptors.response.use((res) => {
     if (res.data.code == 401) {
       // 401，token 过期
       router.push({ path: '/login' })
+      // window.location.href = './#/login'
     }
     return Promise.reject(res.data)
   }
